@@ -1,4 +1,7 @@
 import unittest
+import csv
+import json
+from pathlib import Path
 
 from validator.acceptance import compare_runs, evaluate_run
 
@@ -94,6 +97,21 @@ class AcceptanceTests(unittest.TestCase):
         comparison = compare_runs(baseline, candidate)
         self.assertEqual(comparison["regression_count"], 1)
         self.assertEqual(comparison["candidate_decision"], "FAIL")
+
+    def test_synthetic_example_files(self):
+        root = Path(__file__).resolve().parents[1]
+        def rows(name):
+            with (root / "examples" / name).open(newline="", encoding="utf-8") as handle:
+                return list(csv.DictReader(handle))
+        with (root / "examples" / "acceptance_protocol.json").open(encoding="utf-8") as handle:
+            sample_protocol = json.load(handle)
+        sample_cases = rows("acceptance_cases.csv")
+        sample_reviews = rows("acceptance_reviews.csv")
+        baseline = evaluate_run(sample_protocol, sample_cases, rows("acceptance_baseline_run.csv"), sample_reviews)
+        candidate = evaluate_run(sample_protocol, sample_cases, rows("acceptance_candidate_run.csv"), sample_reviews)
+        self.assertEqual(baseline["decision"], "PASS")
+        self.assertEqual(candidate["decision"], "FAIL")
+        self.assertGreater(compare_runs(baseline, candidate)["regression_count"], 0)
 
     def test_duplicate_case_ids_are_rejected(self):
         duplicated = cases() + [cases()[0]]
