@@ -1,6 +1,4 @@
 {
-  "positive_label": 1,
-  "tolerance": 0.005,
   "metrics": {
     "accuracy": 0.9,
     "precision": 0.9,
