@@ -125,9 +125,9 @@ if not cases_file or not candidate_file:
     st.info("Upload a buyer-owned case set and candidate run to evaluate acceptance. Synthetic example files are in the repository's examples folder.")
     st.markdown("#### What the workbench does")
     a,b,c = st.columns(3)
-    a.markdown("**Buyer-owned rules**\\n\\nVersioned criteria, severity and thresholds.")
-    b.markdown("**Evidence-based decision**\\n\\nPASS, FAIL or INSUFFICIENT EVIDENCE.")
-    c.markdown("**Change control**\\n\\nNew failures and resolved cases versus a baseline.")
+    a.markdown("**Buyer-owned rules**\n\nVersioned criteria, severity and thresholds.")
+    b.markdown("**Evidence-based decision**\n\nPASS, FAIL or INSUFFICIENT EVIDENCE.")
+    c.markdown("**Change control**\n\nNew failures and resolved cases versus a baseline.")
     st.stop()
 
 try:
