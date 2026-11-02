@@ -37,8 +37,6 @@ Required columns:
 
 ```json
 {
-  "positive_label": 1,
-  "tolerance": 0.005,
   "metrics": {
     "accuracy": 0.90,
     "precision": 0.90,
@@ -49,7 +47,7 @@ Required columns:
 }
 ```
 
-All reported metric values must be between 0 and 1. The tolerance is an absolute difference, not a relative percentage.
+All reported metric values must be between 0 and 1. The positive class and absolute tolerance are selected in the app sidebar.
 
 ## Checks performed
 
@@ -77,7 +75,7 @@ This application does not establish:
 - that ground-truth labels are correct;
 - that the export is complete or representative;
 - semantic duplicates, near-duplicates, or indirect data leakage;
-- statistical validity beyond the implemented row-level bootstrap intervals; the bootstrap assumes independent and identically distributed rows and estimates sampling variability only;
+- benchmark validity beyond the implemented row-level bootstrap intervals; the bootstrap assumes independent and identically distributed rows and estimates sampling variability only;
 - fairness, robustness, security, safety, or production performance;
 - whether the model creates commercial value.
 
@@ -95,4 +93,4 @@ python -m unittest discover -s tests -v
 
 ## Product scope
 
-The current supported workflow is binary classification, including row-level percentile-bootstrap intervals for selected metrics. Regression, ranking, generative-AI evaluations, statistical uncertainty, benchmark provenance and richer experiment metadata are not represented as supported capabilities.
+The current supported workflow is binary classification, including row-level percentile-bootstrap intervals for selected metrics. Regression, ranking, generative-AI evaluations, benchmark provenance and richer experiment metadata are not represented as supported capabilities.
