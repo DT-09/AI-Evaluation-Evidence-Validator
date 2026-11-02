@@ -1,6 +1,6 @@
 """Deterministic evidence checks for binary-classification evaluations."""
 from __future__ import annotations
-import html, json, math
+import html, json, math, random
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -41,6 +41,80 @@ def calculate_metrics(pairs:list[tuple[int,int]],positive_label:int=1)->dict[str
     f1=2*precision*recall/(precision+recall) if precision is not None and recall is not None and precision+recall else None
     return {"sample_count":total,"confusion_matrix":{"tp":tp,"fp":fp,"tn":tn,"fn":fn},
             "metrics":{"accuracy":(tp+tn)/total,"precision":precision,"recall":recall,"f1":f1,"specificity":specificity}}
+
+
+def bootstrap_metric_intervals(
+    pairs: list[tuple[int, int]],
+    positive_label: int = 1,
+    n_resamples: int = 1000,
+    confidence: float = 0.95,
+    seed: int = 42,
+) -> dict[str, Any]:
+    """Percentile bootstrap intervals for row-level binary-classification metrics.
+
+    Assumes evaluation rows are independent and identically distributed.
+    This estimates sampling variability only; it does not establish dataset
+    representativeness or correct benchmark construction.
+    """
+    if positive_label not in (0, 1):
+        raise ValueError("positive_label must be 0 or 1")
+    if n_resamples < 100:
+        raise ValueError("n_resamples must be at least 100")
+    if not 0 < confidence < 1:
+        raise ValueError("confidence must be between 0 and 1")
+    if len(pairs) < 2:
+        return {
+            "method": "non-parametric percentile bootstrap",
+            "confidence_level": confidence,
+            "n_resamples": n_resamples,
+            "seed": seed,
+            "status": "NOT_ESTIMATED",
+            "reason": "At least two valid evaluation rows are required.",
+            "intervals": {name: None for name in METRICS},
+        }
+
+    rng = random.Random(seed)
+    samples: dict[str, list[float]] = {name: [] for name in METRICS}
+    n = len(pairs)
+    for _ in range(n_resamples):
+        draw = [pairs[rng.randrange(n)] for _ in range(n)]
+        values = calculate_metrics(draw, positive_label)["metrics"]
+        for name, value in values.items():
+            if value is not None and math.isfinite(value):
+                samples[name].append(value)
+
+    alpha = (1.0 - confidence) / 2.0
+
+    def percentile(values: list[float], probability: float) -> float | None:
+        if not values:
+            return None
+        ordered = sorted(values)
+        position = (len(ordered) - 1) * probability
+        lower = math.floor(position)
+        upper = math.ceil(position)
+        if lower == upper:
+            return ordered[lower]
+        weight = position - lower
+        return ordered[lower] * (1 - weight) + ordered[upper] * weight
+
+    intervals = {}
+    for name, values in samples.items():
+        intervals[name] = {
+            "lower": percentile(values, alpha),
+            "upper": percentile(values, 1 - alpha),
+            "valid_resamples": len(values),
+        } if values else None
+
+    return {
+        "method": "non-parametric percentile bootstrap",
+        "confidence_level": confidence,
+        "n_resamples": n_resamples,
+        "seed": seed,
+        "status": "COMPUTED",
+        "assumption": "Evaluation rows are independent and identically distributed.",
+        "interpretation": "Intervals estimate sampling variability only; they do not establish representativeness, label correctness, or benchmark validity.",
+        "intervals": intervals,
+    }
 
 def _compare(metrics,reported,tolerance):
     checks=[]
@@ -101,12 +175,13 @@ def validate_dataframe(frame:pd.DataFrame,reported:dict[str,Any]|None=None,posit
     checks.append(_check("data.cross_split_id_overlap","FLAG" if overlaps else "PASS",f"{len(overlaps)} ID(s) occur across splits." if overlaps else "No exact record-ID overlap across splits.",*overlaps[:100]))
     split_counts=Counter(work["split"].fillna("(blank)").replace("","(blank)").astype(str).tolist())
     metrics=calculate_metrics(pairs,positive_label)
-    checks.extend(_compare(metrics,reported,tolerance) if reported else [_check("claims.reported_metrics","NOT_TESTED","No reported metrics supplied.")])
+    checks.extend(_compare(metrics["metrics"],reported,tolerance) if reported else [_check("claims.reported_metrics","NOT_TESTED","No reported metrics supplied.")])
     return {"product":"AI Evaluation Evidence Validator","input":{"record_count":len(frame),"columns":list(frame.columns),"split_counts":dict(split_counts)},
-        "configuration":{"positive_label":positive_label,"tolerance":tolerance},"recalculated":metrics,"checks":[asdict(c) for c in checks],
+        "configuration":{"positive_label":positive_label,"tolerance":tolerance},"recalculated":metrics,"statistical_review":bootstrap_metric_intervals(pairs, positive_label), "checks":[asdict(c) for c in checks],
         "limitations":["Findings apply only to supplied exported records and stated configuration.",
         "Exact record-ID checks do not detect semantic duplicates, near-duplicates or indirect data leakage.",
-        "A metric match does not establish representativeness, statistical significance, robustness, fairness, safety or production performance.",
+        "A metric match does not establish representativeness, robustness, fairness, safety or production performance.",
+        "Bootstrap intervals assume independent and identically distributed rows and estimate sampling variability only.",
         "The engine cannot verify label correctness or export completeness.",
         "This is a technical review aid, not an audit opinion, certification or investment recommendation."]}
 
