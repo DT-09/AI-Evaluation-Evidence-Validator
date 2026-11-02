@@ -122,11 +122,16 @@ def evaluate_run(
         run_map[case_id] = row
 
     review_map: dict[tuple[str, str], dict[str, Any]] = {}
+    criterion_types = {c["criterion_id"]: c["type"] for c in protocol["criteria"]}
     for review in reviews or []:
         key = (str(review.get("case_id", "")).strip(), str(review.get("criterion_id", "")).strip())
         decision = str(review.get("decision", "")).strip().upper()
         if not all(key):
             raise ValueError("Every review needs case_id and criterion_id.")
+        if key[0] not in case_map:
+            raise ValueError(f"Review references unknown case_id: {key[0]}")
+        if key[1] not in criterion_types or criterion_types[key[1]] != "human_review":
+            raise ValueError(f"Review references a criterion that is not configured for human review: {key[1]}")
         if decision not in ALLOWED_REVIEW_DECISIONS:
             raise ValueError(f"Invalid review decision for {key}: {decision}")
         if key in review_map:
@@ -225,7 +230,8 @@ def evaluate_run(
 
     decisive_all = [s for s in all_statuses if s in {"PASS", "FAIL"}]
     overall_rate = decisive_all.count("PASS") / len(decisive_all) if decisive_all else None
-    missing_or_inconclusive = any(s in {"MISSING", "INCONCLUSIVE"} for s in all_statuses)
+    criteria_without_cases = [s["criterion_id"] for s in summaries if s["applicable_count"] == 0]
+    missing_or_inconclusive = any(s in {"MISSING", "INCONCLUSIVE"} for s in all_statuses) or bool(criteria_without_cases) or bool(extra_case_ids)
     hard_severities = protocol.get("decision_rules", {}).get("hard_fail_severities", ["critical"])
     hard_failures = [r for r in result_rows if r["status"] == "FAIL" and r["severity"] in hard_severities]
     threshold_failures = [
@@ -282,6 +288,8 @@ def _case_criteria(case: dict[str, Any], protocol: dict[str, Any]) -> set[str]:
     unknown = selected - known
     if unknown:
         raise ValueError(f"Test case {case.get('case_id')} references unknown criteria: {sorted(unknown)}")
+    if not selected:
+        raise ValueError(f"Test case {case.get('case_id')} must reference at least one criterion.")
     return selected
 
 
