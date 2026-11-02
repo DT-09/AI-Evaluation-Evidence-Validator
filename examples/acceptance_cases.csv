@@ -1,0 +1,6 @@
+case_id,input_text,expected_json,criterion_ids
+C-001,"I was charged twice for my subscription.","{""route"":""billing""}",route-correct;response-present;tone-review
+C-002,"The mobile app crashes when I sign in.","{""route"":""technical""}",route-correct;response-present;tone-review
+C-003,"I need to change the email on my account.","{""route"":""account""}",route-correct;response-present;tone-review
+C-004,"Where can I find my invoice?","{""route"":""billing""}",route-correct;response-present;tone-review
+C-005,"I cannot reset my password.","{""route"":""account""}",route-correct;response-present;tone-review
