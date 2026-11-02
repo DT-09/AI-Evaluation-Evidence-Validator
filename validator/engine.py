@@ -210,10 +210,16 @@ def render_html_report(result:dict[str,Any])->str:
         interval_rows += f"<tr><td>{html.escape(name)}</td><td>{html.escape(shown)}</td></tr>"
 
     cm=result["recalculated"]["confusion_matrix"] or {}
+    manifest = result.get("reproducibility", {})
+    manifest_rows = "".join(
+        f"<tr><td>{html.escape(str(key))}</td><td>{html.escape(str(value))}</td></tr>"
+        for key, value in manifest.items()
+    )
+
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Evaluation Evidence Verification</title>
 <style>body{{margin:0;background:#f4f2eb;color:#202820;font:15px/1.6 system-ui,sans-serif}}main{{max-width:1100px;margin:42px auto;padding:0 22px}}h1,h2{{font-family:Georgia,serif;font-weight:500}}h1{{font-size:36px}}section{{background:#fff;border:1px solid #deded3;padding:22px;margin:20px 0}}table{{width:100%;border-collapse:collapse}}th,td{{text-align:left;padding:10px;border-bottom:1px solid #deded3;vertical-align:top}}th{{background:#f0eee7}}.muted{{color:#657064}}.notice{{border-left:3px solid #9a7952}}</style></head><body><main>
 <h1>AI Evaluation Evidence Verification</h1><p class="muted">Evidence-based recalculation · {result['input']['record_count']} supplied records</p>
-<section><h2>Recalculated metrics</h2><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>{metric_rows}</tbody></table>
+<section><h2>Reproducibility manifest</h2><table><tbody>{manifest_rows}</tbody></table></section>\n<section><h2>Recalculated metrics</h2><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>{metric_rows}</tbody></table>
 <p><b>Confusion matrix:</b> TP {cm.get('tp','—')} · FP {cm.get('fp','—')} · TN {cm.get('tn','—')} · FN {cm.get('fn','—')}</p><p><b>Split counts:</b> {html.escape(json.dumps(result['input']['split_counts']))}</p></section>
 <section><h2>Statistical review</h2><p>{html.escape(statistical.get("method", "Not run"))} · {statistical.get("confidence_level", 0.95):.0%} confidence level · {statistical.get("n_resamples", 0)} resamples</p><table><thead><tr><th>Metric</th><th>Interval</th></tr></thead><tbody>{interval_rows}</tbody></table><p>{html.escape(statistical.get("interpretation", statistical.get("reason", "No statistical estimate available.")))}</p></section>\n<section><h2>Verification checks</h2><table><thead><tr><th>Check</th><th>Status</th><th>Finding</th><th>Details</th></tr></thead><tbody>{check_rows}</tbody></table></section>
 <section class="notice"><h2>Scope and limitations</h2><ul>{limitations}</ul><small>A PASS is not a certification.</small></section></main></body></html>"""
