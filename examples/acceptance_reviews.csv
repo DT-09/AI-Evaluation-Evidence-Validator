@@ -1,0 +1,6 @@
+case_id,criterion_id,decision,rationale,reviewer_id
+C-001,tone-review,PASS,Clear and appropriate response,reviewer-01
+C-002,tone-review,PASS,Clear and appropriate response,reviewer-01
+C-003,tone-review,PASS,Clear and appropriate response,reviewer-01
+C-004,tone-review,PASS,Clear and appropriate response,reviewer-01
+C-005,tone-review,PASS,Clear and appropriate response,reviewer-01
