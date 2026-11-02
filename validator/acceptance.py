@@ -139,12 +139,14 @@ def evaluate_run(
         run_row = run_map.get(case_id)
         if run_row is None:
             for criterion in protocol["criteria"]:
-                if criterion["criterion_id"] in _case_criteria(case, protocol):
+                cid = criterion["criterion_id"]
+                if cid in _case_criteria(case, protocol):
                     result_rows.append({
-                        "case_id": case_id, "criterion_id": criterion["criterion_id"],
+                        "case_id": case_id, "criterion_id": cid,
                         "severity": criterion["severity"], "status": "MISSING",
                         "detail": "No output was supplied for this test case."
                     })
+                    criterion_results.setdefault(cid, []).append("MISSING")
             continue
         output = _decode_object(run_row.get("output_json", {}), f"output_json for {case_id}")
         expected = _decode_object(case.get("expected_json", {}), f"expected_json for {case_id}")
