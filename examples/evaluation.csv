@@ -1,0 +1,11 @@
+record_id,split,actual,predicted
+r001,test,1,1
+r002,test,1,1
+r003,test,1,0
+r004,test,0,0
+r005,test,0,1
+r006,test,0,0
+r007,test,1,1
+r008,test,0,0
+r009,test,1,1
+r010,test,0,0
