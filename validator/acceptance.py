@@ -4,7 +4,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
-import math
+import re
 from collections import Counter
 from typing import Any
 
@@ -33,6 +33,10 @@ def validate_protocol(protocol: dict[str, Any]) -> list[str]:
     for key in ("protocol_id", "version", "workflow", "criteria", "decision_rules"):
         if key not in protocol:
             errors.append(f"Missing protocol field: {key}")
+    for key in ("protocol_id", "version", "workflow"):
+        value = protocol.get(key)
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"{key} must be a non-empty string.")
     if not isinstance(protocol.get("criteria"), list) or not protocol.get("criteria"):
         errors.append("criteria must be a non-empty array.")
         return errors
@@ -58,8 +62,19 @@ def validate_protocol(protocol: dict[str, Any]) -> list[str]:
             errors.append(f"{prefix}.minimum_pass_rate must be between 0 and 1.")
         if criterion.get("type") in {"exact_match", "required_field", "regex_match"} and not criterion.get("field"):
             errors.append(f"{prefix}.field is required for this criterion type.")
-        if criterion.get("type") == "allowed_values" and (not criterion.get("field") or not isinstance(criterion.get("allowed_values"), list)):
-            errors.append(f"{prefix} requires field and allowed_values array.")
+        if criterion.get("type") == "allowed_values":
+            values = criterion.get("allowed_values")
+            if not isinstance(criterion.get("field"), str) or not criterion.get("field").strip() or not isinstance(values, list) or not values:
+                errors.append(f"{prefix} requires a non-empty field and allowed_values array.")
+        if criterion.get("type") == "regex_match":
+            pattern = criterion.get("pattern")
+            if not isinstance(pattern, str) or not pattern:
+                errors.append(f"{prefix}.pattern must be a non-empty regular expression.")
+            else:
+                try:
+                    re.compile(pattern)
+                except re.error as exc:
+                    errors.append(f"{prefix}.pattern is invalid: {exc}")
     rules = protocol.get("decision_rules", {})
     if not isinstance(rules, dict):
         errors.append("decision_rules must be an object.")

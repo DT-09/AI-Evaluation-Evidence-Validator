@@ -114,11 +114,27 @@ st.markdown("### 02 — Candidate system run")
 candidate_file = st.file_uploader("Upload candidate run CSV", type=["csv"], key="candidate")
 st.caption("Required columns: case_id, output_json. Each output_json cell must contain a JSON object.")
 
+st.markdown("#### Candidate system metadata")
+st.caption("Enter the identifiers supplied by the vendor or test environment. Leave unknown fields blank; the workbench will not infer versions.")
+candidate_vendor = st.text_input("Supplier / vendor", key="candidate_vendor")
+candidate_system_name = st.text_input("System / product name", key="candidate_system_name")
+candidate_system_version = st.text_input("System / workflow version", key="candidate_system_version")
+candidate_model_version = st.text_input("Model version", key="candidate_model_version")
+candidate_prompt_version = st.text_input("Prompt / configuration version", key="candidate_prompt_version")
+candidate_run_id = st.text_input("Run ID", key="candidate_run_id")
+
 candidate_reviews_file = st.file_uploader("Candidate human-review decisions (optional)", type=["csv"], key="candidate_reviews")
 st.caption("Review columns: case_id, criterion_id, decision (PASS / FAIL / INCONCLUSIVE), rationale, reviewer_id.")
 
 st.markdown("### 03 — Accepted baseline (optional)")
 baseline_file = st.file_uploader("Upload previously accepted baseline run CSV", type=["csv"], key="baseline")
+st.markdown("#### Baseline system metadata")
+baseline_vendor = st.text_input("Baseline supplier / vendor", key="baseline_vendor")
+baseline_system_name = st.text_input("Baseline system / product name", key="baseline_system_name")
+baseline_system_version = st.text_input("Baseline system / workflow version", key="baseline_system_version")
+baseline_model_version = st.text_input("Baseline model version", key="baseline_model_version")
+baseline_prompt_version = st.text_input("Baseline prompt / configuration version", key="baseline_prompt_version")
+baseline_run_id = st.text_input("Baseline run ID", key="baseline_run_id")
 baseline_reviews_file = st.file_uploader("Baseline human-review decisions (optional)", type=["csv"], key="baseline_reviews")
 
 if not cases_file or not candidate_file:
@@ -137,7 +153,12 @@ try:
     candidate = evaluate_run(
         protocol, cases, candidate_rows, candidate_reviews,
         metadata={
-            "system_name": candidate_file.name,
+            "vendor": candidate_vendor.strip() or None,
+            "system_name": candidate_system_name.strip() or candidate_file.name,
+            "system_version": candidate_system_version.strip() or None,
+            "model_version": candidate_model_version.strip() or None,
+            "prompt_or_configuration_version": candidate_prompt_version.strip() or None,
+            "run_id": candidate_run_id.strip() or None,
             "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
             "protocol_sha256": sha256(protocol_bytes),
             "case_set_sha256": sha256(cases_payload),
@@ -154,7 +175,12 @@ try:
         baseline = evaluate_run(
             protocol, cases, baseline_rows, baseline_reviews,
             metadata={
-                "system_name": baseline_file.name,
+                "vendor": baseline_vendor.strip() or None,
+                "system_name": baseline_system_name.strip() or baseline_file.name,
+                "system_version": baseline_system_version.strip() or None,
+                "model_version": baseline_model_version.strip() or None,
+                "prompt_or_configuration_version": baseline_prompt_version.strip() or None,
+                "run_id": baseline_run_id.strip() or None,
                 "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
                 "protocol_sha256": sha256(protocol_bytes),
                 "case_set_sha256": sha256(cases_payload),

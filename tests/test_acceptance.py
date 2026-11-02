@@ -113,6 +113,31 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(candidate["decision"], "FAIL")
         self.assertGreater(compare_runs(baseline, candidate)["regression_count"], 0)
 
+    def test_regex_pattern_is_required(self):
+        invalid_protocol = protocol()
+        invalid_protocol["criteria"].append({
+            "criterion_id": "reference-format",
+            "type": "regex_match",
+            "field": "reference",
+            "severity": "minor",
+            "minimum_pass_rate": 1.0
+        })
+        with self.assertRaisesRegex(ValueError, "pattern must be a non-empty"):
+            evaluate_run(invalid_protocol, cases(), run(), reviews())
+
+    def test_invalid_regex_pattern_is_rejected(self):
+        invalid_protocol = protocol()
+        invalid_protocol["criteria"].append({
+            "criterion_id": "reference-format",
+            "type": "regex_match",
+            "field": "reference",
+            "pattern": "[",
+            "severity": "minor",
+            "minimum_pass_rate": 1.0
+        })
+        with self.assertRaisesRegex(ValueError, "pattern is invalid"):
+            evaluate_run(invalid_protocol, cases(), run(), reviews())
+
     def test_duplicate_case_ids_are_rejected(self):
         duplicated = cases() + [cases()[0]]
         with self.assertRaisesRegex(ValueError, "Duplicate test case ID"):
