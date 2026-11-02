@@ -2,7 +2,7 @@ name: Validate application
 
 on:
   push:
-    branches: [main]
+    branches: [main, buyer-acceptance-assurance]
   pull_request:
     branches: [main]
 

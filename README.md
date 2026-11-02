@@ -1,6 +1,12 @@
-# AI Evaluation Evidence Validator
+# AI Acceptance Assurance
 
-A local-first application for independently recalculating reported binary-classification metrics from row-level evaluation exports and recording evidence checks.
+A local-first, buyer-owned workbench for evaluating third-party AI system outputs against a versioned acceptance protocol, recording human adjudication, and comparing candidate runs with an accepted baseline.
+
+## Product purpose
+
+The buyer defines the acceptance criteria. The same protocol and case set can be used to evaluate competing supplier systems or later system versions. The workbench records case-level outcomes, applies explicit thresholds and hard gates, and produces a portable evidence package.
+
+This is an acceptance-workflow aid. It is not an AI safety certification, regulatory compliance opinion, general AI audit, or production observability platform.
 
 ## Run locally
 
@@ -18,79 +24,98 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The application opens in your browser. It processes the files in the running app session; it does not require a third-party model API.
+The application processes uploaded files in the running app session. It does not require a third-party model API.
 
 ## Input contract
 
-### Evaluation CSV
+### Acceptance protocol JSON
+
+See `examples/acceptance_protocol.json`.
+
+A protocol defines:
+- protocol ID and version;
+- workflow and case-set version;
+- criteria, criterion types, severity and minimum pass rates;
+- overall pass-rate and case-coverage thresholds;
+- severities that trigger a hard failure.
+
+Supported criterion types:
+- `exact_match`: compare an output field with a buyer-defined expected field;
+- `allowed_values`: require an output field to belong to a fixed allowed set;
+- `required_field`: require an output field to be present and non-empty;
+- `regex_match`: require an output field to match a buyer-defined regular expression;
+- `human_review`: require a separate reviewer decision.
+
+### Test case CSV
 
 Required columns:
+- `case_id`: stable, unique test-case identifier;
+- `expected_json`: JSON object containing expected values;
+- `criterion_ids`: semicolon-separated criterion IDs that apply to the case.
 
-| Column | Meaning |
-|---|---|
-| `record_id` | Stable identifier for an evaluated example |
-| `split` | Dataset split label, e.g. train, validation, test |
-| `actual` | Ground-truth binary label: 0 or 1 |
-| `predicted` | Model-predicted binary label: 0 or 1 |
+Additional context columns such as `input_text` may be included.
 
-### Optional reported-metrics JSON
+### System run CSV
 
-```json
-{
-  "metrics": {
-    "accuracy": 0.90,
-    "precision": 0.90,
-    "recall": 0.90,
-    "f1": 0.90,
-    "specificity": 0.90
-  }
-}
-```
+Required columns:
+- `case_id`: test-case identifier;
+- `output_json`: JSON object emitted by the candidate system.
 
-All reported metric values must be between 0 and 1. The positive class and absolute tolerance are selected in the app sidebar.
+### Human-review CSV
 
-## Checks performed
+Required columns:
+- `case_id`;
+- `criterion_id`;
+- `decision`: `PASS`, `FAIL`, or `INCONCLUSIVE`.
 
-- Recalculates accuracy, precision, recall, F1 and specificity from valid binary-label rows.
-- Estimates percentile-bootstrap confidence intervals for those metrics (1,000 resamples, fixed seed) when at least two valid rows are available.
-- Records the source CSV SHA-256, optional claims-file SHA-256, run timestamp, configuration and bootstrap settings in a reproducibility manifest.
-- Compares supplied claims with recalculated metrics.
-- Flags missing required values and invalid binary labels.
-- Flags duplicate record IDs.
-- Flags exact record IDs appearing in multiple dataset splits.
-- Reports sample counts and split counts.
-- Exports a JSON evidence record and a self-contained HTML report.
+Optional columns include `rationale` and `reviewer_id`.
 
-## Interpretation
+## Decision semantics
 
-- **PASS** — the specific configured check found no issue in the supplied evidence.
-- **FLAG** — a discrepancy or structural issue needs review.
-- **NOT_TESTED** — the evidence required for that check was not supplied or the check did not apply.
+- **PASS** — the supplied run met the stated protocol and evidence-coverage rules.
+- **FAIL** — a hard-gate failure or an explicit threshold was not met.
+- **INSUFFICIENT EVIDENCE** — case coverage, human review or other required evidence is incomplete.
 
-A flag is not proof of misconduct. A pass is not a certification.
+A PASS is not a general claim that an AI system is correct, safe, fair, compliant or suitable for every use.
 
-## Explicit limitations
+## Change comparison
 
-This application does not establish:
-- that ground-truth labels are correct;
-- that the export is complete or representative;
-- semantic duplicates, near-duplicates, or indirect data leakage;
-- benchmark validity beyond the implemented row-level bootstrap intervals; the bootstrap assumes independent and identically distributed rows and estimates sampling variability only;
-- fairness, robustness, security, safety, or production performance;
-- whether the model creates commercial value.
+When an accepted baseline run is supplied, the workbench compares case/criterion statuses and reports regressions, resolved failures and other changes. Comparisons are meaningful only when the protocol and case-set versions are compatible.
 
-Bootstrap intervals are not a substitute for a study-design review. They do not correct sampling bias, dependence between observations, benchmark contamination or invalid labels. The tool is a technical review aid, not an audit opinion, legal opinion, certification, or investment recommendation.
+## Evidence package
+
+The JSON and HTML exports include protocol identifiers and versions, run metadata, source-file SHA-256 hashes, criterion outcomes, case-level details, decision rules and limitations.
+
+## Synthetic examples
+
+The `examples/` directory contains a synthetic customer-support routing protocol, case set, baseline run, candidate run and human-review file. These are test fixtures, not customer results or performance claims.
+
+## Current boundaries
+
+- Local-first single-user workflow; no hosted multi-tenant service or authentication.
+- Structured CSV/JSON imports; no live vendor connectors.
+- Initial scope is a small set of explicit deterministic checks plus human review.
+- No automatic proof that test cases are representative or complete.
+- No semantic correctness guarantee from deterministic checks.
+- No automatic safety, security, fairness or regulatory determination.
+- No customer validation or proven willingness to pay yet.
 
 ## Data handling
 
-The application is designed to run locally. If deployed to a hosted environment, the operator must review hosting, access controls, retention, logging, backups, and confidentiality terms before accepting sensitive diligence data. Do not upload confidential transaction material to an unreviewed deployment.
+Do not upload personal, confidential or transaction-sensitive data to an unreviewed deployment. Before any real customer engagement, access, encryption, retention, deletion, logging, backups and confidentiality terms must be reviewed and approved. Contracting, payment and data arrangements require an appropriately authorised adult/business representative.
 
 ## Tests
 
 ```bash
 python -m unittest discover -s tests -v
+python -m compileall -q app.py validator tests
 ```
 
-## Product scope
+## Product strategy
 
-The current supported workflow is binary classification, including row-level percentile-bootstrap intervals for selected metrics. Regression, ranking, generative-AI evaluations, benchmark provenance and richer experiment metadata are not represented as supported capabilities.
+See:
+- [Product direction](PRODUCT_DIRECTION.md)
+- [MVP specification](MVP_SPEC.md)
+- [Competitive workflow review](research/COMPETITIVE-WORKFLOW-REVIEW.md)
+
+The buyer-side acceptance and change-control workflow is a commercial hypothesis. It must be validated with actual buyers before the product is expanded or marketed as differentiated.

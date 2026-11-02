@@ -1,0 +1,5 @@
+case_id,output_json
+C-001,"{""route"":""billing"",""response"":""We can help with the duplicate charge.""}"
+C-002,"{""route"":""billing"",""response"":""Please share your app version.""}"
+C-003,"{""route"":""account"",""response"":""Use account settings to update your email.""}"
+C-004,"{""route"":""billing"",""response"":""Your invoice is available in billing settings.""}"
