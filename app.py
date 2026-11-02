@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 from datetime import datetime, timezone
 
@@ -72,8 +74,9 @@ if csv_file is None:
     c3.markdown("**Claim comparison**\n\nReported values versus deterministic recalculation.")
     st.stop()
 
+csv_payload = csv_file.getvalue()
 try:
-    frame = pd.read_csv(csv_file, dtype="string", keep_default_na=False)
+    frame = pd.read_csv(io.BytesIO(csv_payload), dtype="string", keep_default_na=False)
 except Exception as exc:
     st.error(f"Could not read the CSV: {exc}")
     st.stop()
@@ -83,15 +86,30 @@ st.caption(f"{len(frame):,} rows · {len(frame.columns)} columns")
 st.dataframe(frame.head(12), use_container_width=True, hide_index=True)
 
 reported = {}
+reported_payload = json_file.getvalue() if json_file is not None else b""
 if json_file is not None:
     try:
-        reported = load_reported_metrics(json_file.getvalue())
+        reported = load_reported_metrics(reported_payload)
     except Exception as exc:
         st.error(f"Reported-metrics JSON is invalid: {exc}")
         st.stop()
 
 try:
     result = validate_dataframe(frame, reported, positive_label, tolerance)
+    result["reproducibility"] = {
+        "engine": "AI Evaluation Evidence Validator",
+        "engine_version": "0.2.0",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "evaluation_file": csv_file.name,
+        "evaluation_file_sha256": hashlib.sha256(csv_payload).hexdigest(),
+        "reported_claims_file": json_file.name if json_file is not None else None,
+        "reported_claims_sha256": hashlib.sha256(reported_payload).hexdigest() if reported_payload else None,
+        "record_count": len(frame),
+        "positive_label": positive_label,
+        "absolute_tolerance": tolerance,
+        "bootstrap_seed": result.get("statistical_review", {}).get("seed", 42),
+        "bootstrap_resamples": result.get("statistical_review", {}).get("n_resamples", 1000),
+    }
 except Exception as exc:
     st.error(f"Validation could not be completed: {exc}")
     st.stop()
@@ -130,6 +148,20 @@ if cm:
     b.metric("False positives", cm["fp"])
     c.metric("True negatives", cm["tn"])
     d.metric("False negatives", cm["fn"])
+
+st.markdown("#### Statistical review — 95% bootstrap intervals")
+statistical = result.get("statistical_review", {})
+interval_rows = []
+for name, interval in statistical.get("intervals", {}).items():
+    if interval is None or interval.get("lower") is None or interval.get("upper") is None:
+        interval_rows.append({"Metric": name.title(), "95% interval": "Not estimated", "Valid resamples": 0 if interval is None else interval.get("valid_resamples", 0)})
+    else:
+        interval_rows.append({"Metric": name.title(), "95% interval": f"{interval['lower']:.3%} – {interval['upper']:.3%}", "Valid resamples": interval["valid_resamples"]})
+if interval_rows:
+    st.dataframe(pd.DataFrame(interval_rows), use_container_width=True, hide_index=True)
+st.caption(statistical.get("interpretation", statistical.get("reason", "Bootstrap uncertainty is not available.")))
+with st.expander("Reproducibility manifest"):
+    st.json(result.get("reproducibility", {}))
 
 st.markdown("#### Check register")
 for item in checks:
