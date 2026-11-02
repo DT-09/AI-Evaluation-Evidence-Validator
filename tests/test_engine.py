@@ -1,10 +1,30 @@
 import unittest
 import pandas as pd
 
-from validator.engine import calculate_metrics, validate_dataframe
+from validator.engine import bootstrap_metric_intervals, calculate_metrics, validate_dataframe
 
 
 class MetricTests(unittest.TestCase):
+
+    def test_reported_metric_mismatch_is_flagged(self):
+        frame = pd.DataFrame([
+            {"record_id": "a", "split": "test", "actual": "1", "predicted": "1"},
+            {"record_id": "b", "split": "test", "actual": "0", "predicted": "0"},
+        ])
+        result = validate_dataframe(
+            frame, {"metrics": {"accuracy": 0.25}}, tolerance=0.001
+        )
+        statuses = {c["check_id"]: c["status"] for c in result["checks"]}
+        self.assertEqual(statuses["claim.accuracy"], "FLAG")
+
+    def test_bootstrap_intervals_are_reproducible(self):
+        pairs = [(1, 1), (1, 0), (0, 1), (0, 0), (1, 1), (0, 0)]
+        first = bootstrap_metric_intervals(pairs, n_resamples=200, seed=7)
+        second = bootstrap_metric_intervals(pairs, n_resamples=200, seed=7)
+        self.assertEqual(first, second)
+        self.assertEqual(first["status"], "COMPUTED")
+        self.assertIsNotNone(first["intervals"]["accuracy"])
+
     def test_confusion_matrix_and_metrics(self):
         pairs = [(1, 1), (1, 0), (0, 1), (0, 0), (0, 0), (1, 1)]
         result = calculate_metrics(pairs)
