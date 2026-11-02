@@ -1,59 +1,62 @@
-# Independent AI Evaluation Verification Assessment
+# Paid pilot: AI support workflow acceptance review
 
-## The decision question
+## Buyer decision
 
-Can selected AI performance claims be independently reconstructed from the evaluation records supplied for review?
+Does a third-party AI support workflow meet the buyer's defined acceptance criteria, and what changes when the supplier releases a new version?
 
-This is a focused evidence-verification engagement. It is not a full technical, legal, security, or investment due-diligence opinion.
+This is a scoped operational acceptance review. It is not a general AI audit, safety certification, legal opinion or compliance attestation.
 
-## Initial paid pilot
+## Initial pilot boundary
 
-**Scope:** One binary-classification evaluation export, one reported-metrics file, one model/evaluation configuration, and up to 25,000 records.
+- One customer-support workflow: ticket classification and routing.
+- One buyer-approved acceptance protocol.
+- Up to 50 buyer-provided test cases.
+- Up to two system runs (for example, two suppliers or an accepted baseline and candidate release).
+- Explicit deterministic checks for structured routing outcomes and required output fields.
+- Human-review decisions supplied or approved by the buyer for subjective criteria.
+- One case-level comparison and evidence report.
 
-**Delivery target:** Five business days after complete, usable inputs are received and the scope is agreed.
+Any change to the case count, number of systems, criteria, review effort or data handling changes the scope and must be agreed before work starts.
 
-**Commercial terms:** A fixed fee is agreed privately after reviewing a non-confidential schema/sample and confirming scope. The pilot is paid; it is not a free proof of concept. Contracting, payment and tax arrangements must be handled through an appropriately authorised adult/business representative.
+## Buyer inputs
 
-## Client inputs
+- Workflow description and decision context.
+- Acceptance criteria and severity definitions, or a working session to draft them.
+- Non-confidential or appropriately approved test cases.
+- Structured outputs from each system run.
+- Expected outcomes for deterministic checks.
+- Human-review rubric and reviewer decisions for subjective checks.
+- System/version metadata where available.
 
-- CSV with `record_id`, `split`, `actual`, and `predicted` columns.
-- Reported metric claims and their definitions.
-- Positive-class definition.
-- Model, dataset and evaluation-run identifiers or versions, where available.
-- Relevant evaluator/configuration metadata and known exclusions.
-
-Do not send personal data, trade secrets or confidential transaction materials until confidentiality, access, retention, deletion and contractual arrangements have been reviewed and approved.
+Do not transfer personal, confidential or customer data until a responsible adult/business representative has reviewed and approved the contract, permissions, access controls, retention, deletion and security arrangements. Initial scoping should use synthetic or non-confidential examples.
 
 ## Deliverables
 
-1. **Recalculated metrics:** accuracy, precision, recall, F1 and specificity, with formulas and confusion-matrix counts.
-2. **Claim comparison:** reported versus recalculated values, absolute differences and the configured tolerance.
-3. **Evidence integrity register:** required-field gaps, invalid labels, duplicate record IDs and exact record-ID overlap across splits.
-4. **Statistical review:** 95% percentile-bootstrap intervals for supported metrics, with seed, resample count and assumptions stated.
-5. **Findings report:** what matched, what differed, what could not be tested, limitations and follow-up questions.
-6. **Reproducibility package:** JSON results, HTML report, source-file SHA-256 hashes, input counts, settings and calculation metadata.
+1. Versioned acceptance protocol.
+2. Case coverage and schema review.
+3. Case-level PASS / FAIL / INSUFFICIENT EVIDENCE results.
+4. Hard-gate and threshold summary.
+5. Baseline-versus-candidate regression register.
+6. Human-review record, where supplied by the buyer.
+7. JSON evidence package and readable HTML report.
+8. Limitations and unresolved evidence register.
 
-## Acceptance criteria
+## Acceptance criteria for delivery
 
-The engagement is complete when the client receives the agreed report and machine-readable evidence package, the source-file hashes and settings are recorded, and every reported claim is labelled as matched, discrepant or not tested.
+The pilot is complete when the agreed inputs have been processed, every test case/criterion result is traceable, decision rules are disclosed, missing evidence is visible, and the buyer receives the agreed evidence package.
 
-A PASS means only that the configured check found no discrepancy in the supplied evidence. It is not certification.
+The tool does not decide whether a system is safe or legally compliant. The buyer retains the final procurement and deployment decision.
 
-## Explicit exclusions
+## Commercial terms
 
-- No verification that supplied labels are correct or that exports are complete or representative.
-- No proof of benchmark independence, data rights, provenance or absence of semantic/indirect leakage.
-- No model-card, codebase, architecture, security, fairness, safety or production-performance audit.
-- No causal, legal, accounting, valuation or investment opinion.
-- No guarantee that the model performs well outside the supplied evaluation sample.
+Paid, fixed-scope pilot. Fee and delivery timing are agreed privately after a non-confidential schema review and confirmation of scope. No free proof-of-concept and no public price claim.
 
-## Current technical boundary
+Contracting, payment, tax and confidential-data arrangements must be handled by an appropriately authorised adult/business representative.
 
-The implemented workflow supports binary classification only. Regression, ranking and generative-AI evaluation tasks are outside the initial pilot.
+## What must be validated before scaling
 
-## Scoping process
-
-1. A short discovery call establishes the claim, task, data shape and decision deadline.
-2. The client provides a non-confidential schema/sample first.
-3. Scope, access, confidentiality, adult-authorised contracting and payment arrangements are agreed before any real client data is transferred.
-4. The assessment begins only after the inputs and scope are accepted.
+- Buyers have a recurring supplier acceptance/change-control problem.
+- They can obtain structured outputs from candidate systems.
+- Existing evaluation platforms and internal processes do not adequately solve the buyer-owned cross-supplier workflow.
+- A budget owner will pay for the pilot.
+- At least one buyer wants repeat acceptance reviews after supplier changes.
