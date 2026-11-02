@@ -12,7 +12,7 @@ This is a focused evidence-verification engagement. It is not a full technical, 
 
 **Delivery target:** Five business days after complete, usable inputs are received and the scope is agreed.
 
-**Pilot fee:** USD 250 (or local-currency equivalent) as an initial commercial test price. The final scope, payment route, tax treatment and contract must be agreed through an appropriately authorised adult/business representative.
+**Commercial terms:** A fixed fee is agreed privately after reviewing a non-confidential schema/sample and confirming scope. The pilot is paid; it is not a free proof of concept. Contracting, payment and tax arrangements must be handled through an appropriately authorised adult/business representative.
 
 ## Client inputs
 
