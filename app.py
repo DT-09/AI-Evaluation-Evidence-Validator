@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import io
 import json
 from datetime import datetime, timezone
@@ -8,186 +7,217 @@ from datetime import datetime, timezone
 import pandas as pd
 import streamlit as st
 
-from validator.engine import load_reported_metrics, render_html_report, validate_dataframe
+from validator.acceptance import (
+    compare_runs, evaluate_run, render_html_report, sha256, validate_protocol
+)
 
-st.set_page_config(page_title="AI Evaluation Evidence Validator", page_icon="◈", layout="wide")
+st.set_page_config(page_title="AI Acceptance Assurance", page_icon="◈", layout="wide")
 
-st.markdown("""
+PAPER = "#f4f2eb"
+INK = "#202820"
+MUTED = "#667067"
+ACCENT = "#92744f"
+
+st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
-:root { --ink:#222a25; --muted:#68736b; --paper:#f4f2eb; --line:#dfded4; --gold:#a1845c; }
-.stApp { background:var(--paper); color:var(--ink); }
-.block-container { max-width:1180px; padding-top:2.2rem; padding-bottom:4rem; }
-h1,h2,h3 { font-family:'Playfair Display',Georgia,serif !important; color:var(--ink); }
-p,div,label { font-family:'DM Sans',sans-serif; }
-.eyebrow {font:500 11px 'DM Mono',monospace;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
-.hero {padding:1.3rem 0 1.8rem;border-bottom:1px solid var(--line);margin-bottom:1.6rem}
-.hero h1 {font-size:2.8rem;line-height:1.1;margin:.6rem 0}
-.sub {max-width:720px;color:var(--muted);font-size:1.04rem}
-.panel {background:#fff;border:1px solid var(--line);padding:1.1rem 1.3rem;border-radius:3px}
-.metric {font:500 1.6rem 'DM Mono',monospace;color:var(--ink)}
-.metric-label {font:11px 'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-div[data-testid="stMetric"] {background:white;border:1px solid var(--line);padding:14px;border-radius:3px}
-div[data-testid="stMetricLabel"] {color:var(--muted)}
-.stButton>button, .stDownloadButton>button {border-radius:2px;border:1px solid #343d35;background:#343d35;color:#fff;min-height:2.7rem}
-.stButton>button:hover,.stDownloadButton>button:hover {background:#4c5b50;color:white;border-color:#4c5b50}
-div[data-testid="stFileUploader"] {background:#fff;border:1px dashed #bcb9ad;padding:1rem}
-footer {visibility:hidden}
+:root {{ --paper:{PAPER}; --ink:{INK}; --muted:{MUTED}; --accent:{ACCENT}; }}
+.stApp {{ background:var(--paper); color:var(--ink); }}
+.block-container {{ max-width:1240px; padding-top:2.2rem; padding-bottom:4rem; }}
+h1,h2,h3 {{ font-family:Georgia,serif !important; color:var(--ink); }}
+p,div,label {{ font-family:Arial,sans-serif; }}
+.eyebrow {{font:600 11px monospace;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}}
+.hero {{padding:1.3rem 0 1.8rem;border-bottom:1px solid #dedbd1;margin-bottom:1.6rem}}
+.hero h1 {{font-size:2.7rem;line-height:1.08;margin:.6rem 0}}
+.sub {{max-width:780px;color:var(--muted);font-size:1.02rem;line-height:1.6}}
+div[data-testid="stMetric"] {{background:white;border:1px solid #dedbd1;padding:14px;border-radius:3px}}
+.stButton>button,.stDownloadButton>button {{border-radius:2px;border:1px solid #343d35;background:#343d35;color:#fff;min-height:2.6rem}}
+.stButton>button:hover,.stDownloadButton>button:hover {{background:#4c5b50;color:white;border-color:#4c5b50}}
+div[data-testid="stFileUploader"] {{background:white;border:1px dashed #bcb9ad;padding:.8rem}}
+footer {{visibility:hidden}}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div class="hero">
-  <div class="eyebrow">Independent AI performance verification</div>
-  <h1>Test the numbers.<br>Trust the evidence.</h1>
-  <p class="sub">Recalculate reported model-performance metrics from row-level evaluation records. Identify discrepancies, inspect dataset structure and export a reproducible review.</p>
+  <div class="eyebrow">Buyer-owned AI supplier acceptance</div>
+  <h1>Accept against your criteria.<br>Keep the evidence.</h1>
+  <p class="sub">Define a versioned acceptance protocol, evaluate supplier outputs against the same buyer-owned cases, review exceptions and compare system changes with an accepted baseline.</p>
 </div>
 """, unsafe_allow_html=True)
 
-with st.sidebar:
-    st.markdown("### Evaluation settings")
-    positive_label = st.selectbox("Positive class", [1, 0], index=0,
-                                  help="The class treated as positive when calculating precision, recall, F1 and specificity.")
-    tolerance = st.number_input("Allowed metric difference", min_value=0.0, max_value=1.0,
-                                value=0.005, step=0.001, format="%.3f",
-                                help="Absolute difference allowed between reported and recalculated values.")
-    st.divider()
-    st.caption("Processing takes place in this app session. Do not submit confidential deal data unless your deployment and data-handling terms have been reviewed.")
-
-left, right = st.columns([1.15, .85], gap="large")
-with left:
-    st.markdown("### 01 — Evaluation records")
-    csv_file = st.file_uploader("Upload evaluation CSV", type=["csv"], help="Required columns: record_id, split, actual, predicted")
-    st.caption("Required fields: record_id · split · actual · predicted")
-with right:
-    st.markdown("### 02 — Reported claims")
-    json_file = st.file_uploader("Upload reported-metrics JSON", type=["json"], help="Optional. Compares reported metrics against recalculated results.")
-    st.caption("Optional fields: positive_label, tolerance, metrics")
-
-st.markdown("---")
-if csv_file is None:
-    st.info("Upload an evaluation CSV to begin. Use the sample files in the repository's examples folder to test the workflow.")
-    st.markdown("#### What this review checks")
-    c1,c2,c3 = st.columns(3)
-    c1.markdown("**Metric reconstruction**\n\nAccuracy, precision, recall, F1 and specificity.")
-    c2.markdown("**Record integrity**\n\nMissing fields, invalid labels, duplicate IDs and exact cross-split ID overlap.")
-    c3.markdown("**Claim comparison**\n\nReported values versus deterministic recalculation.")
-    st.stop()
-
-csv_payload = csv_file.getvalue()
-try:
-    frame = pd.read_csv(io.BytesIO(csv_payload), dtype="string", keep_default_na=False)
-except Exception as exc:
-    st.error(f"Could not read the CSV: {exc}")
-    st.stop()
-
-st.markdown("### Evidence preview")
-st.caption(f"{len(frame):,} rows · {len(frame.columns)} columns")
-st.dataframe(frame.head(12), use_container_width=True, hide_index=True)
-
-reported = {}
-reported_payload = json_file.getvalue() if json_file is not None else b""
-if json_file is not None:
-    try:
-        reported = load_reported_metrics(reported_payload)
-    except Exception as exc:
-        st.error(f"Reported-metrics JSON is invalid: {exc}")
-        st.stop()
-
-try:
-    result = validate_dataframe(frame, reported, positive_label, tolerance)
-    result["reproducibility"] = {
-        "engine": "AI Evaluation Evidence Validator",
-        "engine_version": "0.2.0",
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "evaluation_file": csv_file.name,
-        "evaluation_file_sha256": hashlib.sha256(csv_payload).hexdigest(),
-        "reported_claims_file": json_file.name if json_file is not None else None,
-        "reported_claims_sha256": hashlib.sha256(reported_payload).hexdigest() if reported_payload else None,
-        "record_count": len(frame),
-        "positive_label": positive_label,
-        "absolute_tolerance": tolerance,
-        "bootstrap_seed": result.get("statistical_review", {}).get("seed", 42),
-        "bootstrap_resamples": result.get("statistical_review", {}).get("n_resamples", 1000),
+DEFAULT_PROTOCOL = {
+    "protocol_id": "SUPPORT-ROUTING-001",
+    "version": "1.0",
+    "case_set_version": "1.0",
+    "workflow": "Customer support ticket routing",
+    "criteria": [
+        {"criterion_id": "route-correct", "type": "exact_match", "field": "route", "severity": "critical", "minimum_pass_rate": 1.0},
+        {"criterion_id": "response-present", "type": "required_field", "field": "response", "severity": "major", "minimum_pass_rate": 1.0},
+        {"criterion_id": "tone-review", "type": "human_review", "severity": "minor", "minimum_pass_rate": 1.0}
+    ],
+    "decision_rules": {
+        "minimum_overall_pass_rate": 1.0,
+        "minimum_case_coverage": 1.0,
+        "hard_fail_severities": ["critical"]
     }
+}
+
+def read_csv_upload(upload, label):
+    if upload is None:
+        return None, None
+    payload = upload.getvalue()
+    try:
+        frame = pd.read_csv(io.BytesIO(payload), dtype="string", keep_default_na=False)
+    except Exception as exc:
+        raise ValueError(f"{label} could not be read as CSV: {exc}") from exc
+    return frame.to_dict(orient="records"), payload
+
+def parse_reviews(upload, label):
+    rows, payload = read_csv_upload(upload, label)
+    return rows or [], payload
+
+with st.sidebar:
+    st.markdown("### Acceptance protocol")
+    protocol_text = st.text_area(
+        "Edit buyer-owned protocol JSON",
+        value=json.dumps(DEFAULT_PROTOCOL, indent=2),
+        height=420
+    )
+    st.caption("Protocol versions must be changed deliberately. Prior reports preserve the version used for each decision.")
+
+try:
+    protocol = json.loads(protocol_text)
+    if not isinstance(protocol, dict):
+        raise ValueError("Protocol must be a JSON object.")
+    protocol_errors = validate_protocol(protocol)
 except Exception as exc:
-    st.error(f"Validation could not be completed: {exc}")
+    st.error(f"Protocol is invalid: {exc}")
+    st.stop()
+
+if protocol_errors:
+    st.error("Protocol needs correction: " + " · ".join(protocol_errors))
+    st.stop()
+
+protocol_bytes = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode("utf-8")
+st.download_button(
+    "Download acceptance protocol",
+    json.dumps(protocol, indent=2).encode("utf-8"),
+    file_name=f"{protocol.get('protocol_id','acceptance-protocol')}-v{protocol.get('version','1')}.json",
+    mime="application/json"
+)
+
+st.markdown("### 01 — Buyer-owned test cases")
+cases_file = st.file_uploader("Upload case set CSV", type=["csv"], key="cases")
+st.caption("Required columns: case_id, expected_json, criterion_ids. Add input_text or other context columns as needed.")
+
+st.markdown("### 02 — Candidate system run")
+candidate_file = st.file_uploader("Upload candidate run CSV", type=["csv"], key="candidate")
+st.caption("Required columns: case_id, output_json. Each output_json cell must contain a JSON object.")
+
+candidate_reviews_file = st.file_uploader("Candidate human-review decisions (optional)", type=["csv"], key="candidate_reviews")
+st.caption("Review columns: case_id, criterion_id, decision (PASS / FAIL / INCONCLUSIVE), rationale, reviewer_id.")
+
+st.markdown("### 03 — Accepted baseline (optional)")
+baseline_file = st.file_uploader("Upload previously accepted baseline run CSV", type=["csv"], key="baseline")
+baseline_reviews_file = st.file_uploader("Baseline human-review decisions (optional)", type=["csv"], key="baseline_reviews")
+
+if not cases_file or not candidate_file:
+    st.info("Upload a buyer-owned case set and candidate run to evaluate acceptance. Synthetic example files are in the repository's examples folder.")
+    st.markdown("#### What the workbench does")
+    a,b,c = st.columns(3)
+    a.markdown("**Buyer-owned rules**\\n\\nVersioned criteria, severity and thresholds.")
+    b.markdown("**Evidence-based decision**\\n\\nPASS, FAIL or INSUFFICIENT EVIDENCE.")
+    c.markdown("**Change control**\\n\\nNew failures and resolved cases versus a baseline.")
+    st.stop()
+
+try:
+    cases, cases_payload = read_csv_upload(cases_file, "Case set")
+    candidate_rows, candidate_payload = read_csv_upload(candidate_file, "Candidate run")
+    candidate_reviews, candidate_reviews_payload = parse_reviews(candidate_reviews_file, "Candidate reviews")
+    candidate = evaluate_run(
+        protocol, cases, candidate_rows, candidate_reviews,
+        metadata={
+            "system_name": candidate_file.name,
+            "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "protocol_sha256": sha256(protocol_bytes),
+            "case_set_sha256": sha256(cases_payload),
+            "run_file_sha256": sha256(candidate_payload),
+            "review_file_sha256": sha256(candidate_reviews_payload) if candidate_reviews_payload else None
+        }
+    )
+
+    baseline = None
+    comparison = None
+    if baseline_file is not None:
+        baseline_rows, baseline_payload = read_csv_upload(baseline_file, "Baseline run")
+        baseline_reviews, baseline_reviews_payload = parse_reviews(baseline_reviews_file, "Baseline reviews")
+        baseline = evaluate_run(
+            protocol, cases, baseline_rows, baseline_reviews,
+            metadata={
+                "system_name": baseline_file.name,
+                "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "protocol_sha256": sha256(protocol_bytes),
+                "case_set_sha256": sha256(cases_payload),
+                "run_file_sha256": sha256(baseline_payload),
+                "review_file_sha256": sha256(baseline_reviews_payload) if baseline_reviews_payload else None
+            }
+        )
+        comparison = compare_runs(baseline, candidate)
+except Exception as exc:
+    st.error(f"Evaluation could not be completed: {exc}")
     st.stop()
 
 st.markdown("---")
-st.markdown("### Verification results")
-checks = result["checks"]
-flagged = sum(c["status"] == "FLAG" for c in checks)
-passed = sum(c["status"] == "PASS" for c in checks)
-not_tested = sum(c["status"] == "NOT_TESTED" for c in checks)
-
-m1,m2,m3,m4 = st.columns(4)
-m1.metric("Checks passed", passed)
-m2.metric("Flags", flagged)
-m3.metric("Not tested", not_tested)
-m4.metric("Rows evaluated", result["recalculated"]["sample_count"])
-
-if flagged:
-    st.warning(f"{flagged} check(s) need review. A flag identifies a discrepancy or evidence limitation; it is not, by itself, proof of misconduct.")
-elif not_tested:
-    st.info("No flags were raised by the completed checks. Some checks could not be performed.")
+st.markdown("### Acceptance decision")
+decision = candidate["decision"]
+if decision == "PASS":
+    st.success("PASS — the candidate met the supplied protocol and evidence-coverage rules.")
+elif decision == "FAIL":
+    st.error("FAIL — one or more acceptance rules were not met.")
 else:
-    st.success("All configured checks passed. This applies only to the supplied evidence and checks.")
+    st.warning("INSUFFICIENT EVIDENCE — required cases, reviews or coverage are missing.")
 
-metric_cols = st.columns(5)
-for col, (name, value) in zip(metric_cols, result["recalculated"]["metrics"].items()):
-    with col:
-        shown = "N/A" if value is None else f"{value:.3%}"
-        st.metric(name.replace("_", " ").title(), shown)
+summary = candidate["summary"]
+m1,m2,m3,m4 = st.columns(4)
+m1.metric("Case coverage", f"{summary['case_coverage']:.1%}")
+m2.metric("Overall pass rate", "N/A" if summary["overall_pass_rate"] is None else f"{summary['overall_pass_rate']:.1%}")
+m3.metric("Critical failures", summary["hard_failure_count"])
+m4.metric("Cases in protocol", summary["case_count"])
 
-cm = result["recalculated"]["confusion_matrix"]
-if cm:
-    st.markdown("#### Confusion matrix")
-    a,b,c,d = st.columns(4)
-    a.metric("True positives", cm["tp"])
-    b.metric("False positives", cm["fp"])
-    c.metric("True negatives", cm["tn"])
-    d.metric("False negatives", cm["fn"])
+st.markdown("#### Criterion results")
+st.dataframe(pd.DataFrame(candidate["criterion_summary"]), use_container_width=True, hide_index=True)
+st.markdown("#### Case-level evidence")
+st.dataframe(pd.DataFrame(candidate["case_results"]), use_container_width=True, hide_index=True)
 
-st.markdown("#### Statistical review — 95% bootstrap intervals")
-statistical = result.get("statistical_review", {})
-interval_rows = []
-for name, interval in statistical.get("intervals", {}).items():
-    if interval is None or interval.get("lower") is None or interval.get("upper") is None:
-        interval_rows.append({"Metric": name.title(), "95% interval": "Not estimated", "Valid resamples": 0 if interval is None else interval.get("valid_resamples", 0)})
+if summary["extra_run_case_ids"]:
+    st.warning("The run contains case IDs not present in the buyer's case set: " + ", ".join(summary["extra_run_case_ids"]))
+
+if comparison is not None:
+    st.markdown("---")
+    st.markdown("### Change comparison")
+    x,y,z = st.columns(3)
+    x.metric("Baseline decision", comparison["baseline_decision"])
+    y.metric("Candidate decision", comparison["candidate_decision"])
+    z.metric("Regressions", comparison["regression_count"])
+    if comparison["changes"]:
+        st.dataframe(pd.DataFrame(comparison["changes"]), use_container_width=True, hide_index=True)
     else:
-        interval_rows.append({"Metric": name.title(), "95% interval": f"{interval['lower']:.3%} – {interval['upper']:.3%}", "Valid resamples": interval["valid_resamples"]})
-if interval_rows:
-    st.dataframe(pd.DataFrame(interval_rows), use_container_width=True, hide_index=True)
-st.caption(statistical.get("interpretation", statistical.get("reason", "Bootstrap uncertainty is not available.")))
-with st.expander("Reproducibility manifest"):
-    st.json(result.get("reproducibility", {}))
-
-st.markdown("#### Check register")
-for item in checks:
-    label = f"{item['status']}  ·  {item['check_id']}  ·  {item['summary']}"
-    with st.expander(label, expanded=item["status"] == "FLAG"):
-        if item["details"]:
-            for detail in item["details"]:
-                st.write(f"• {detail}")
-        else:
-            st.caption("No additional detail.")
-
-st.markdown("#### Scope and limitations")
-for limitation in result["limitations"]:
-    st.write(f"• {limitation}")
+        st.success("No case-level status changes were detected.")
 
 st.markdown("---")
-st.markdown("### Export evidence")
-st.caption("The exports contain the supplied file name, row counts, configuration, calculated values and check register. Review them before sharing.")
-json_bytes = json.dumps(result, indent=2).encode("utf-8")
-html_bytes = render_html_report(result).encode("utf-8")
+st.markdown("### Evidence package")
+st.caption("The report records the protocol, test cases, run metadata, source hashes, criterion outcomes, decision rules and limitations.")
+json_payload = json.dumps({"candidate": candidate, "baseline": baseline, "comparison": comparison}, indent=2).encode("utf-8")
+html_payload = render_html_report(candidate, comparison).encode("utf-8")
 d1,d2 = st.columns(2)
 with d1:
-    st.download_button("Download JSON evidence", json_bytes, file_name="evaluation-verification-report.json",
-                       mime="application/json", use_container_width=True)
+    st.download_button("Download JSON evidence", json_payload, file_name="ai-acceptance-evidence.json", mime="application/json", use_container_width=True)
 with d2:
-    st.download_button("Download HTML report", html_bytes, file_name="evaluation-verification-report.html",
-                       mime="text/html", use_container_width=True)
+    st.download_button("Download HTML report", html_payload, file_name="ai-acceptance-evidence.html", mime="text/html", use_container_width=True)
 
-st.caption("AI Evaluation Evidence Validator · Deterministic calculations · Human review required")
+with st.expander("Decision semantics and limitations"):
+    st.write("PASS means only that the supplied run met the stated acceptance rules. FAIL means a stated rule was not met. INSUFFICIENT EVIDENCE means the required coverage or review evidence is incomplete.")
+    for item in candidate["limitations"]:
+        st.write("• " + item)
+
+st.caption("AI Acceptance Assurance · Local-first evaluation workbench · Human approval required")
