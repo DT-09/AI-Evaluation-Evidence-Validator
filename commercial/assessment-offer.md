@@ -1,22 +1,24 @@
-# Paid pilot: AI support workflow acceptance review
+# Paid pilot: AI support workflow acceptance evidence review
 
 ## Buyer decision
 
-Does a third-party AI support workflow meet the buyer's defined acceptance criteria, and what changes when the supplier releases a new version?
+Does a third-party AI support workflow meet the buyer's defined acceptance criteria, and what changed when the supplier released a new version?
 
-This is a scoped operational acceptance review. It is not a general AI audit, safety certification, legal opinion or compliance attestation.
+This is a scoped review of buyer-supplied test cases and structured run exports. It is not a general AI audit, safety certification, legal opinion, compliance attestation or independent live-agent testing service.
 
 ## Initial pilot boundary
 
 - One customer-support workflow: ticket classification and routing.
 - One buyer-approved acceptance protocol.
 - Up to 50 buyer-provided test cases.
-- Up to two system runs (for example, two suppliers or an accepted baseline and candidate release).
+- Up to two structured system runs (for example, two suppliers or an accepted baseline and candidate release).
 - Explicit deterministic checks for structured routing outcomes and required output fields.
 - Human-review decisions supplied or approved by the buyer for subjective criteria.
 - One case-level comparison and evidence report.
 
-Any change to the case count, number of systems, criteria, review effort or data handling changes the scope and must be agreed before work starts.
+**Execution boundary:** the buyer or its authorised technical team runs the test cases in its own approved environment and exports the outputs. The current workbench imports and evaluates those structured outputs; it does not execute tests against live vendor systems, connect to production systems, verify backend state or measure integration latency.
+
+Any change to the case count, number of systems, criteria, review effort, live execution or data handling changes the scope and must be agreed before work starts.
 
 ## Buyer inputs
 
