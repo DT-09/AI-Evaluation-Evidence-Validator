@@ -53,7 +53,9 @@ All reported metric values must be between 0 and 1. The tolerance is an absolute
 
 ## Checks performed
 
-- Recalculates accuracy, precision, recall, F1 and specificity.
+- Recalculates accuracy, precision, recall, F1 and specificity from valid binary-label rows.
+- Estimates percentile-bootstrap confidence intervals for those metrics (1,000 resamples, fixed seed) when at least two valid rows are available.
+- Records the source CSV SHA-256, optional claims-file SHA-256, run timestamp, configuration and bootstrap settings in a reproducibility manifest.
 - Compares supplied claims with recalculated metrics.
 - Flags missing required values and invalid binary labels.
 - Flags duplicate record IDs.
@@ -75,11 +77,11 @@ This application does not establish:
 - that ground-truth labels are correct;
 - that the export is complete or representative;
 - semantic duplicates, near-duplicates, or indirect data leakage;
-- statistical significance or confidence intervals;
+- statistical validity beyond the implemented row-level bootstrap intervals; the bootstrap assumes independent and identically distributed rows and estimates sampling variability only;
 - fairness, robustness, security, safety, or production performance;
 - whether the model creates commercial value.
 
-The tool is a technical review aid, not an audit opinion, legal opinion, certification, or investment recommendation.
+Bootstrap intervals are not a substitute for a study-design review. They do not correct sampling bias, dependence between observations, benchmark contamination or invalid labels. The tool is a technical review aid, not an audit opinion, legal opinion, certification, or investment recommendation.
 
 ## Data handling
 
@@ -93,4 +95,4 @@ python -m unittest discover -s tests -v
 
 ## Product scope
 
-The current supported workflow is binary classification. Regression, ranking, generative-AI evaluations, statistical uncertainty, benchmark provenance and richer experiment metadata are not represented as supported capabilities.
+The current supported workflow is binary classification, including row-level percentile-bootstrap intervals for selected metrics. Regression, ranking, generative-AI evaluations, statistical uncertainty, benchmark provenance and richer experiment metadata are not represented as supported capabilities.
