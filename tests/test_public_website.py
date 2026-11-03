@@ -48,7 +48,7 @@ class PublicWebsiteTests(unittest.TestCase):
         self.assertRegex(self.html,re.compile(r"synthetic",re.IGNORECASE))
         self.assertIn("not client data",self.html.lower())
     def test_product_boundaries_are_disclosed(self):
-        for phrase in ("no scanned-pdf ocr","no semantic metric matching","not an audit opinion","not proof of an error"):
+        for phrase in ("no scanned-pdf ocr","no semantic matching","not an audit opinion","not proof of an error"):
             self.assertIn(phrase,self.html.lower())
 
 if __name__=="__main__": unittest.main()
