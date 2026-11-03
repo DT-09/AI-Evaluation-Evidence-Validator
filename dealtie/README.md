@@ -19,15 +19,16 @@ streamlit run dealtie/app.py
 
 ## Try the synthetic case
 
-Upload `dealtie/sample-data/synthetic-observations.csv` in the app, or use **Load synthetic example**. The sample intentionally contains a revenue difference and a net-debt unit conflict. All figures and source references are fictional.
+Use **Load synthetic example** in the app or upload `dealtie/sample-data/synthetic-observations.csv`. All figures and source references are fictional.
 
-## Supported workflow
+## Working workflow
 
-1. Upload selectable-text PDF, XLSX, XLS or structured CSV files (15 MB per file in the app).
-2. Extract PDF text lines or non-empty spreadsheet cells with page/sheet/cell references.
-3. Manually confirm metric, period, value and unit for extracted items.
-4. Compare observations by normalized metric and period.
-5. Review the source-level observations and export JSON findings plus a flat CSV observation register.
+1. Upload selectable-text PDF, XLSX, XLS or structured CSV files (15 MB per file).
+2. Extract PDF text lines and spreadsheet cell values with page/sheet/cell references.
+3. Confirm extracted observations in a batch review grid. No extracted text is treated as a financial metric until the analyst confirms its mapping.
+4. Add observations manually or import a structured CSV ledger.
+5. Set the numeric comparison tolerance and run deterministic comparisons by metric and period.
+6. Review findings and source observations; export a JSON evidence register and flat CSV.
 
 ### CSV schema
 
@@ -35,17 +36,18 @@ Required columns:
 
 `document,period,metric,value,unit,source_ref`
 
-The document field may be blank; the uploaded filename is then used. Metric, period, unit and source reference are required. Value may be blank so the app can surface an incomplete observation.
+The document field may be blank; the uploaded filename is then used. Metric, period, unit and source reference are required. Value may be blank so an incomplete observation is visible.
 
-## Reconciliation rules
+## Reconciliation statuses
 
 - `TIED`: all supplied numeric values agree within the configured tolerance.
 - `VALUE_MISMATCH`: the numeric spread exceeds tolerance.
 - `UNIT_MISMATCH`: source units differ; no conversion is attempted.
-- `MISSING_OR_NON_NUMERIC`: a value is missing/non-numeric, or a required unit/source reference is absent.
+- `MISSING_OR_NON_NUMERIC`: a value, unit or source reference is missing or a value is non-numeric.
+- `DUPLICATE_SOURCE_ENTRY`: the same document/source reference appears more than once for a metric and period.
 - `INSUFFICIENT_COVERAGE`: fewer than two distinct documents are represented.
 
-Comparison is deterministic. It does not infer that two differently named metrics are equivalent. It does not establish which source is correct.
+Values such as `(100)`, `38.2%` and `4.2x` are parsed as numeric values while retaining the stated unit. The tool does not infer scale, currency, period equivalence or which source is correct.
 
 ## Tests
 
@@ -56,16 +58,17 @@ python -m compileall -q dealtie
 
 ## Deployment
 
-The Streamlit workbench can be deployed as a Streamlit Community Cloud app by selecting this repository, setting the app file path to `dealtie/app.py`, and using `dealtie/requirements.txt` as the dependency file. A deployment has not been configured by this repository.
+The Streamlit workbench can be deployed as a Streamlit Community Cloud app by selecting this repository, setting the app file path to `dealtie/app.py`, and using `dealtie/requirements.txt` as the dependency file. Deployment is not performed by a GitHub commit; verify the app URL and a complete synthetic run after publishing.
 
-The static marketing site is `website/index.html`. It can be deployed as a Cloudflare Pages project with `website` as the build output directory and no build command. A live deployment is not implied by a successful GitHub commit; verify the Pages project and deployment status separately.
+The static marketing site is `website/index.html`. It can be deployed as a Cloudflare Pages project with `website` as the build output directory and no build command. Verify the Pages project and live deployment separately.
 
 ## Data handling and boundaries
 
-- Do not upload confidential live transaction materials to this prototype.
-- Use synthetic or appropriately redacted/authorised data only.
-- No OCR for scanned PDFs, formula evaluation, semantic matching, currency conversion, accounting judgement, audit procedures or QoE conclusions.
+- Prototype only: synthetic or appropriately redacted/authorised data. Do not upload confidential live transaction materials.
+- PDF extraction reads selectable text only; scanned-PDF OCR is not implemented.
+- Excel extraction captures non-empty cell values; it does not evaluate formulas or understand workbook logic.
+- No semantic metric matching, currency conversion, accounting judgement, audit procedures or QoE conclusions.
 - No authentication, hosted multi-user controls, encryption-at-rest, audit-grade history or secure deal-room integration.
 - A mismatch is an investigation lead, not proof of error, misstatement, overpayment or financial loss.
-- This is not production diligence software, an audit opinion, valuation opinion, legal opinion or transaction advice.
+- This is not an audit opinion, valuation opinion, legal opinion or transaction recommendation.
 - Any paid engagement, contract, payment, confidentiality and client-data arrangements require an appropriately authorised business representative. A qualified finance professional must supervise substantive financial interpretation.

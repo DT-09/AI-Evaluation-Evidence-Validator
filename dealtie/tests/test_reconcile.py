@@ -63,6 +63,33 @@ class ReconcileTests(unittest.TestCase):
     def test_ignores_unmappable_rows(self):
         self.assertEqual(reconcile([{"document": "CIM", "value": "10"}]), [])
 
+    def test_percentage_and_multiple_suffixes(self):
+        self.assertEqual(reconcile([
+            self.row("CIM", "38.2%", unit="%"),
+            self.row("QoE", "38.20%", unit="%")
+        ])[0]["status"], "TIED")
+        self.assertEqual(reconcile([
+            self.row("CIM", "4.2x", unit="x"),
+            self.row("QoE", "4.20x", unit="x")
+        ])[0]["status"], "TIED")
+
+    def test_duplicate_source_reference_is_flagged(self):
+        result = reconcile([
+            self.row("CIM", "100", source_ref="p.1"),
+            self.row("CIM", "100", source_ref="p.1"),
+            self.row("QoE", "100", source_ref="p.3")
+        ])
+        self.assertEqual(result[0]["status"], "DUPLICATE_SOURCE_ENTRY")
+
+    def test_same_metric_different_periods_are_separate(self):
+        result = reconcile([
+            self.row("CIM", "100", period="FY2024"),
+            self.row("QoE", "100", period="FY2024"),
+            self.row("CIM", "110", period="FY2025"),
+            self.row("QoE", "110", period="FY2025")
+        ])
+        self.assertEqual(len(result), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

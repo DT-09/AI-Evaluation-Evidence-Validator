@@ -4,6 +4,7 @@ from decimal import Decimal, InvalidOperation
 
 
 def _num(value):
+    """Parse a plain financial number without guessing scale or currency."""
     if value is None:
         return None
     raw = str(value).strip()
@@ -11,7 +12,9 @@ def _num(value):
         return None
     raw = raw.replace(",", "").replace("$", "").replace("€", "").replace("£", "").strip()
     if raw.startswith("(") and raw.endswith(")"):
-        raw = "-" + raw[1:-1]
+        raw = "-" + raw[1:-1].strip()
+    if raw.endswith("%") or raw.endswith("x") or raw.endswith("X"):
+        raw = raw[:-1].strip()
     try:
         number = Decimal(raw)
     except (InvalidOperation, ValueError):
@@ -20,17 +23,18 @@ def _num(value):
 
 
 def reconcile(observations, tolerance=Decimal("0.01")):
-    """Compare confirmed observations without implicit unit or currency conversion.
+    """Compare analyst-confirmed observations without implicit conversions.
 
-    A finding is a review signal, not an accounting conclusion. Rows without a
-    document, metric or period are excluded because they cannot be grouped safely.
+    Rows that lack a document, metric or period cannot be grouped safely and
+    are excluded. Duplicate document/source references are surfaced rather
+    than silently counted as independent evidence.
     """
     tolerance = Decimal(str(tolerance))
     if not tolerance.is_finite() or tolerance < 0:
         raise ValueError("tolerance must be a finite, non-negative number")
 
     groups = defaultdict(list)
-    for index, source in enumerate(observations):
+    for source in observations:
         row = dict(source)
         metric = " ".join(str(row.get("metric", "")).split())
         period = " ".join(str(row.get("period", "")).split())
@@ -43,7 +47,6 @@ def reconcile(observations, tolerance=Decimal("0.01")):
             "document": document,
             "unit": " ".join(str(row.get("unit", "")).split()),
             "source_ref": " ".join(str(row.get("source_ref", "")).split()),
-            "_input_order": index,
         })
         groups[(metric.casefold(), period.casefold())].append(row)
 
@@ -51,20 +54,27 @@ def reconcile(observations, tolerance=Decimal("0.01")):
     for key in sorted(groups):
         rows = groups[key]
         documents = {r["document"].casefold() for r in rows}
-        units = {r["unit"].casefold() for r in rows}
+        units = {r["unit"].casefold() for r in rows if r["unit"]}
+        source_keys = [
+            (r["document"].casefold(), r["source_ref"].casefold())
+            for r in rows if r["source_ref"]
+        ]
+        duplicate_sources = len(source_keys) != len(set(source_keys))
         values = [_num(r.get("value")) for r in rows]
         numeric_values = [v for v in values if v is not None]
 
-        if len(documents) < 2:
+        if duplicate_sources:
+            status = "DUPLICATE_SOURCE_ENTRY"
+            explanation = "The same document and source reference appears more than once for this metric and period. Review the repeated entry before relying on the comparison."
+        elif len(documents) < 2:
             status = "INSUFFICIENT_COVERAGE"
             explanation = "Fewer than two distinct source documents are represented."
-        elif any(not r["unit"] or not r["source_ref"] for r in rows) or len(units) > 1:
-            status = "MISSING_OR_NON_NUMERIC" if any(not r["unit"] or not r["source_ref"] for r in rows) else "UNIT_MISMATCH"
-            explanation = (
-                "At least one observation is missing its unit or source reference."
-                if status == "MISSING_OR_NON_NUMERIC"
-                else "Sources use different units; no conversion was attempted."
-            )
+        elif any(not r["unit"] or not r["source_ref"] for r in rows):
+            status = "MISSING_OR_NON_NUMERIC"
+            explanation = "At least one observation is missing its unit or source reference."
+        elif len(units) > 1:
+            status = "UNIT_MISMATCH"
+            explanation = "Sources use different units; no conversion was attempted."
         elif len(numeric_values) != len(rows):
             status = "MISSING_OR_NON_NUMERIC"
             explanation = "At least one value is blank or non-numeric."
@@ -75,8 +85,6 @@ def reconcile(observations, tolerance=Decimal("0.01")):
             status = "TIED"
             explanation = f"All supplied values agree within the configured tolerance ({tolerance})."
 
-        for row in rows:
-            row.pop("_input_order", None)
         findings.append({
             "metric": rows[0]["metric"],
             "period": rows[0]["period"],
@@ -84,6 +92,7 @@ def reconcile(observations, tolerance=Decimal("0.01")):
             "explanation": explanation,
             "source_count": len(documents),
             "observation_count": len(rows),
+            "tolerance": str(tolerance),
             "observations": rows,
         })
     return findings
