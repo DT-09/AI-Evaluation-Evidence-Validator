@@ -23,12 +23,6 @@ div[data-testid="stDataFrame"],div[data-testid="stDataEditor"]{border:1px solid 
 
 REQUIRED = {"document", "period", "metric", "value", "unit", "source_ref"}
 MAX_FILE_BYTES = 15 * 1024 * 1024
-STATUSES = [
-    "TIED", "VALUE_MISMATCH", "UNIT_MISMATCH",
-    "MISSING_OR_NON_NUMERIC", "DUPLICATE_SOURCE_ENTRY", "INSUFFICIENT_COVERAGE"
-]
-
-
 def invalidate_results():
     st.session_state.results = None
 
@@ -68,7 +62,7 @@ def load_synthetic():
 
 for key, default in {
     "obs": [], "extracts": [], "results": None, "import_errors": [],
-    "source_names": [], "mapping_editor": None
+    "source_names": [], "mapping_rows": []
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -100,11 +94,15 @@ with left:
             except Exception as exc:
                 errors.append(f"{file.name}: {type(exc).__name__}: {exc}")
         st.session_state.extracts = found
+        st.session_state.mapping_rows = []
         st.session_state.obs.extend(csv_rows)
         st.session_state.import_errors = errors
         st.session_state.source_names = [f.name for f in files]
         invalidate_results()
-        st.success(f"Extracted {len(found)} PDF/Excel text or cell items and imported {len(csv_rows)} structured CSV observations.")
+        if errors:
+            st.warning(f"Processed with {len(errors)} file issue(s). {len(found)} PDF/Excel items and {len(csv_rows)} CSV observations were imported; review the errors below.")
+        else:
+            st.success(f"Extracted {len(found)} PDF/Excel text or cell items and imported {len(csv_rows)} structured CSV observations.")
     for error in st.session_state.import_errors:
         st.error(error)
     st.caption("PDF extraction reads selectable text. Excel extraction captures non-empty cell values. Neither identifies financial meaning.")
