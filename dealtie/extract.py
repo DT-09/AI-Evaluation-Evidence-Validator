@@ -26,7 +26,7 @@ def extract_pdf(data, filename):
     out=[]
     for page_no,page in enumerate(reader.pages,1):
         for line_no,line in enumerate((page.extract_text() or "").splitlines(),1):
-            line=re.sub(r"\\s+"," ",line).strip()
+            line=re.sub(r"\s+"," ",line).strip()
             if line:
                 out.append({"document":filename,"source_ref":f"PDF p.{page_no}, line {line_no}","extracted_text":line})
     return out
