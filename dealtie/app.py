@@ -51,6 +51,8 @@ def clean_csv_rows(frame, filename):
 
 
 def load_synthetic():
+    st.session_state.extracts = []
+    st.session_state.mapping_rows = []
     st.session_state.obs = [
         {"document":"CIM v2","metric":"Revenue","period":"FY2025","value":"128.4","unit":"USD m","source_ref":"PDF p.18"},
         {"document":"QoE final","metric":"Revenue","period":"FY2025","value":"126.9","unit":"USD m","source_ref":"PDF p.11"},
@@ -174,7 +176,6 @@ if st.session_state.extracts:
             st.session_state.obs.extend(additions)
             st.session_state.extracts = []
             st.session_state.mapping_rows = []
-            st.session_state.mapping_editor = None
             invalidate_results()
             st.success(f"Added {len(additions)} confirmed observation(s).")
             st.rerun()
