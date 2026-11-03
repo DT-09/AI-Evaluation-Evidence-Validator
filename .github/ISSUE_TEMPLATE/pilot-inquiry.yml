@@ -1,7 +1,6 @@
 name: Non-confidential pilot inquiry
 description: Discuss whether a scoped financial tie-out pilot fits your team's workflow.
 title: "[Pilot inquiry] "
-labels: ["commercial-inquiry"]
 body:
   - type: markdown
     attributes:
