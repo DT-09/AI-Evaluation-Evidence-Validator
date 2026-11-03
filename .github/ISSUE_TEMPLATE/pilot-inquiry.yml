@@ -1,0 +1,64 @@
+name: Non-confidential pilot inquiry
+description: Discuss whether a scoped financial tie-out pilot fits your team's workflow.
+title: "[Pilot inquiry] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include confidential deal information, company financials, personal data, attachments or transaction identifiers in this public form. This is an initial, non-binding inquiry only.
+  - type: input
+    id: organisation
+    attributes:
+      label: Organisation
+      description: Firm or team name.
+      placeholder: Boutique M&A advisory
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Your role
+      options:
+        - M&A advisor
+        - Financial diligence professional
+        - Finance leader
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: workflow
+    attributes:
+      label: Primary workflow
+      options:
+        - Pre-issue CIM / QoE / model tie-out
+        - Buy-side financial document review
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: current_process
+    attributes:
+      label: Current process and recurring friction
+      description: Describe the process at a high level. Do not include transaction-specific details.
+      placeholder: How are headline metrics checked across the document pack today?
+    validations:
+      required: true
+  - type: dropdown
+    id: pilot_interest
+    attributes:
+      label: Interest
+      options:
+        - Discuss a paid, fixed-scope pilot
+        - Request a non-confidential product walkthrough
+        - General question
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Acknowledgement
+      options:
+        - label: I have not included confidential or sensitive information.
+          required: true
+        - label: I understand this is an initial inquiry, not an engagement or commitment.
+          required: true
