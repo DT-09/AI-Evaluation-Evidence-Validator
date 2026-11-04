@@ -8,6 +8,7 @@ import streamlit as st
 
 from dealtie.extract import extract_excel, extract_pdf
 from dealtie.reconcile import reconcile
+from dealtie.report import build_html_report
 
 st.set_page_config(page_title="DealTie | Financial Evidence Reconciliation", layout="wide")
 st.markdown("""<style>
@@ -272,6 +273,12 @@ if st.session_state.results is not None:
         "Download observation register (CSV)",
         pd.DataFrame(flat).to_csv(index=False).encode("utf-8"),
         file_name="dealtie-observation-register.csv", mime="text/csv"
+    )
+    st.download_button(
+        "Download review report (HTML)",
+        build_html_report(results, tolerance=st.session_state.get("applied_tolerance", "0.01")).encode("utf-8"),
+        file_name="dealtie-financial-evidence-review.html",
+        mime="text/html"
     )
 
 st.caption("Prototype only. Synthetic or redacted/authorised data only. Do not upload confidential deal materials. Not an audit, QoE conclusion, valuation opinion or transaction advice.")

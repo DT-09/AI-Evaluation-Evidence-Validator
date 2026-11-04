@@ -1,148 +1,90 @@
-# MVP specification: Buyer-side AI Acceptance Assurance
+# MVP specification — DealTie Financial Evidence Reconciliation
 
-## Product objective
+## Objective
 
-Enable a buyer to define acceptance requirements once, test multiple AI supplier/system versions against the same protocol, adjudicate failures, and retain a defensible change record.
+Produce a reproducible, source-linked exception register for analyst-confirmed financial observations across a small transaction document pack.
 
-The MVP is not a generic LLM evaluation platform, an observability suite, an AI audit, or a certification product.
+## User and initial use case
 
-## Initial workflow boundary
+An analyst at a boutique M&A advisory or financial diligence firm checks selected headline figures across a CIM, QoE report and valuation model before circulation or review.
 
-Customer-support automation for one defined workflow, such as classifying and routing incoming support requests. Do not initially support every customer-service task or every AI modality.
+## Core observation
 
-## Core objects
+Each observation contains:
+- document label;
+- metric;
+- period;
+- reported value;
+- stated unit;
+- source reference (PDF page, worksheet/cell or supplied reference).
 
-### 1. Acceptance protocol
-- Protocol ID and version
-- Buyer/workflow name
-- Intended use and out-of-scope cases
-- Acceptance criteria with stable IDs
-- Criterion type: deterministic / human rubric
-- Severity: critical / major / minor
-- Threshold and hard-gate rules
-- Required evidence fields
-- Approval owner and effective date
+The analyst must confirm financial meaning. Extracted text is not a confirmed observation.
 
-### 2. Test case
-- Stable case ID and version
-- Input payload
-- Expected outcome or reviewer rubric
-- Criterion IDs covered
-- Severity and scenario category
-- Source/author and approval status
-- Sensitive-data classification (metadata only; do not store real sensitive data in an unreviewed deployment)
+## Required capabilities
 
-### 3. System submission
-- Supplier/system name
-- Model, prompt, workflow and configuration version where disclosed
-- Run ID and timestamp
-- Protocol version
-- Structured output for each test case
-- Evidence references and source hashes
+### Source intake
+- Selectable-text PDF extraction with page references.
+- Excel/XLSX cell extraction with sheet and cell references.
+- Structured CSV import.
+- File-size validation and visible import errors.
 
-### 4. Review decision
-- Case and criterion IDs
-- Deterministic result or reviewer outcome
-- Reviewer identity/role
-- Rationale and timestamp
-- Adjudication state: accepted / failed / inconclusive
-- Conflict and escalation status
+### Confirmation and ledger
+- Batch review of extracted candidate observations.
+- Manual observation entry and removal.
+- Required-field validation.
+- Stable display of all confirmed observations before reconciliation.
 
-### 5. Acceptance decision
-- PASS / FAIL / INSUFFICIENT EVIDENCE
-- Hard-gate results
-- Threshold results
-- Coverage and missing evidence
-- Approver and decision timestamp
-- Protocol and system versions
-- Explicit limitations
+### Deterministic comparison
+- Group by normalised metric and period labels.
+- Compare only explicitly stated numeric values.
+- Explicit absolute tolerance.
+- Surface unit conflicts without conversion.
+- Surface missing/non-numeric values, duplicate source references and insufficient document coverage.
+- Preserve every contributing observation in each finding.
 
-## Required product capabilities
+### Review and delivery
+- Findings table and per-finding source observations.
+- JSON evidence-register export.
+- Flat CSV observation export.
+- Readable HTML review report with generated timestamp, stated tolerance, finding explanations, source trail and explicit limitations.
+- Repeatable results for the same input observations and tolerance, excluding generated timestamp metadata.
 
-### A. Protocol authoring
-Create, edit and version acceptance protocols. A new version must not silently rewrite prior decisions.
+## Decision rules
 
-### B. Case-set management
-Import structured test cases; validate schema; preserve stable IDs and versions; identify missing/duplicate IDs; show coverage by criterion and severity.
+- `TIED`: at least two distinct documents, one consistent stated unit, complete numeric values, no duplicate source references, and spread less than or equal to tolerance.
+- `VALUE_MISMATCH`: comparable complete numeric observations with the same stated unit and spread greater than tolerance.
+- `UNIT_MISMATCH`: stated units differ; do not convert.
+- `MISSING_OR_NON_NUMERIC`: a value, unit or source reference is missing or a value cannot be parsed.
+- `DUPLICATE_SOURCE_ENTRY`: a document/source reference pair is repeated within a metric/period group.
+- `INSUFFICIENT_COVERAGE`: fewer than two distinct documents are represented.
 
-### C. Cross-system run ingestion
-Import structured outputs from multiple candidate systems against the same protocol. Record system/version metadata and file hashes. No proprietary vendor API integration is assumed for MVP.
+Priority order is explicit in the implementation; a finding receives one status and a reviewer must inspect all observations before drawing a conclusion.
 
-### D. Deterministic checks
-Support only explicit, testable checks in the first release:
-- exact value / allowed-value checks;
-- required-field and JSON-schema checks;
-- routing/classification outcome checks;
-- threshold and hard-gate evaluation;
-- missing/duplicate case detection;
-- run completeness and protocol-version matching.
+## Out of scope
 
-Do not infer semantic correctness from a deterministic check.
+- OCR for scanned PDFs.
+- Semantic metric matching or automatic accounting interpretation.
+- Formula evaluation or workbook audit.
+- Currency, scale or period conversion.
+- Automatic source hierarchy or authoritative-source selection.
+- Secure hosted deal rooms, authentication, role-based access, encryption-at-rest, multi-user review or audit-grade history.
+- Audit, QoE, valuation, legal or transaction opinions.
 
-### E. Human adjudication
-Provide a review queue for subjective criteria. Capture reviewer outcome, rationale, timestamp and disagreement. Do not silently substitute an LLM judge for human ground truth.
+## MVP acceptance checks
 
-### F. Change comparison
-Compare a candidate run to an accepted baseline using stable case IDs and protocol versions. Show:
-- newly failed cases;
-- previously failed cases now passing;
-- unchanged outcomes;
-- missing or uncomparable cases;
-- changes in aggregate criterion outcomes;
-- changes to system metadata.
+1. Load the synthetic example.
+2. Upload supported source formats and see literal extraction references.
+3. Confirm selected extracted observations.
+4. Add and remove manual observations.
+5. Import a valid CSV and reject invalid schemas with clear errors.
+6. Run comparisons with configurable non-negative tolerance.
+7. Inspect all findings and their source observations.
+8. Export JSON, CSV and HTML review report.
+9. Verify report escaping and source traceability.
+10. Run automated tests and compile the application.
 
-### G. Evidence record
-Generate a machine-readable JSON package and readable HTML/PDF report containing:
-- protocol and case-set versions;
-- supplier/system/run metadata;
-- source hashes;
-- evaluator/check versions;
-- case-level outcomes and reviewer rationale;
-- acceptance rules and computed decision;
-- coverage, exclusions and limitations.
+## Commercial readiness gates
 
-## Non-functional requirements
+A working prototype is not production-ready. Before accepting confidential live deal material, implement and review authentication, authorisation, encryption, retention/deletion, secure storage, audit logging, backup and incident procedures. Contracting and payment must be handled by an appropriately authorised adult/business representative, and qualified finance professionals must supervise financial interpretation.
 
-- Local-first processing for initial private pilots.
-- No third-party model API required for deterministic checks.
-- No sensitive customer data accepted until access, encryption, retention, deletion, logging, backup and contractual controls are reviewed.
-- Explicit role separation between author, reviewer and approver in any multi-user hosted version.
-- Reproducible calculations and deterministic report generation.
-- Tests for boundary conditions, missing evidence, changed protocols and incomplete runs.
-- Export format must be documented and stable.
-
-## MVP acceptance criteria
-
-The MVP is complete only when all of the following work end-to-end on synthetic data:
-1. Create and version an acceptance protocol.
-2. Import a versioned case set.
-3. Import two system runs against the same protocol.
-4. Validate run completeness and schema.
-5. Apply deterministic criteria.
-6. Record human review decisions for subjective criteria.
-7. Calculate PASS / FAIL / INSUFFICIENT EVIDENCE using explicit hard gates and thresholds.
-8. Compare the candidate run to the accepted baseline.
-9. Export a complete evidence record and human-readable report.
-10. Re-run the same inputs and reproduce the same deterministic results.
-11. Automated tests cover every decision rule and important failure mode.
-
-## Explicitly out of scope for MVP
-
-- Production tracing/observability.
-- Prompt engineering or agent building.
-- LLM-as-a-judge as an authoritative acceptance mechanism.
-- Live integrations with every AI vendor.
-- Automated legal or regulatory compliance conclusions.
-- Security penetration testing or model red-teaming.
-- Claims of universal AI quality or safety.
-- Multi-industry benchmark library.
-
-## Commercial validation gates
-
-Do not build the full hosted platform until discovery confirms:
-- buyers repeatedly compare or re-accept third-party AI suppliers;
-- the current process creates measurable cost, delay or risk;
-- the buyer owns or can access representative acceptance cases;
-- a budget owner will pay for initial assessment and recurring change review.
-
-A paid pilot must use a narrowly agreed scope and appropriately authorised adult/business contracting and data-handling arrangements.
+Before building a hosted platform, validate recurring buyer pain and willingness to pay through practitioner interviews and at least one properly authorised paid pilot.
