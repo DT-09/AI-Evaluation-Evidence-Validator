@@ -6,6 +6,16 @@ import re
 
 _NUMBER = re.compile(r"^[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)$")
 
+# Operational review order only; this is not a financial materiality or risk score.
+_REVIEW_PRIORITY = {
+    "VALUE_MISMATCH": (1, "Resolve comparison"),
+    "UNIT_MISMATCH": (1, "Resolve comparison"),
+    "DUPLICATE_SOURCE_ENTRY": (2, "Resolve evidence quality"),
+    "MISSING_OR_NON_NUMERIC": (2, "Resolve evidence quality"),
+    "INSUFFICIENT_COVERAGE": (3, "Complete source coverage"),
+    "TIED": (4, "No exception"),
+}
+
 
 def _num(value):
     """Parse a plain financial number without guessing currency or scale.
@@ -109,14 +119,24 @@ def reconcile(observations, tolerance=Decimal("0.01")):
             status = "TIED"
             explanation = f"All supplied values agree within the configured tolerance ({tolerance})."
 
+        priority, priority_label = _REVIEW_PRIORITY[status]
         findings.append({
             "metric": rows[0]["metric"],
             "period": rows[0]["period"],
             "status": status,
+            "review_priority": priority,
+            "review_priority_label": priority_label,
             "explanation": explanation,
             "source_count": len(documents),
             "observation_count": len(rows),
             "tolerance": str(tolerance),
             "observations": rows,
         })
+    # Actionable comparison/evidence exceptions precede incomplete coverage
+    # and tied metrics. Stable secondary keys keep repeated runs deterministic.
+    findings.sort(key=lambda item: (
+        item["review_priority"],
+        item["metric"].casefold(),
+        item["period"].casefold(),
+    ))
     return findings
