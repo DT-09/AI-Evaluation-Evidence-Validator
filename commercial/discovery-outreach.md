@@ -1,72 +1,70 @@
-# Buyer discovery: AI support acceptance and change control
+# DealTie buyer discovery and qualification
 
 ## Target interview
 
-Speak with a Head of Customer Support Operations, Customer Experience Operations leader, AI automation owner or procurement lead who has evaluated or deployed a third-party AI support system.
+Speak with a managing partner, M&A partner, director, senior associate or financial diligence lead at a boutique M&A advisory or diligence firm.
 
-Initial vertical hypothesis: B2B SaaS customer-support operations. Do not expand to other verticals until repeated buyer evidence supports it.
+The goal is to learn how the team reconciles selected figures across CIMs, QoE reports and valuation models before a pack is circulated. Do not pitch before understanding the last real review. Do not request confidential deal details.
 
 ## Objective
 
-Determine whether supplier acceptance and post-change re-acceptance are costly, recurring problems that existing tools and internal processes fail to solve adequately.
-
-Do not pitch first. Reconstruct the buyer's last real decision.
+Determine whether cross-document tie-outs create recurring manual work or evidence-traceability gaps that the existing process does not adequately solve—and whether a buyer would pay for a bounded second-pass review.
 
 ## Interview sequence
 
-1. Tell me about the last time you evaluated or changed an AI system handling support tickets.
-2. What business workflow did it perform?
-3. What did you need it to get right before approval?
-4. Who wrote the test cases and acceptance criteria?
-5. What evidence did the supplier provide?
-6. What did your team independently test?
-7. Which failures were most costly or difficult to detect?
-8. How did you compare suppliers or versions using the same cases?
-9. What happened when the supplier changed its model, prompt, workflow or configuration?
-10. How long did the review take, and which people were involved?
-11. Which existing products, spreadsheets or internal processes handled each step?
-12. Where did those tools fail, and what workaround did you use?
-13. How often does this review recur?
-14. Who owns the budget and who can approve a paid assessment?
-15. What would make an external acceptance evidence package useful enough to pay for?
+1. Walk me through the last transaction pack your team prepared or reviewed, without naming the client or deal.
+2. Which documents were compared: CIM, QoE report, valuation model, or others?
+3. Which metrics and periods were formally tied out?
+4. Who owned the review and who signed off?
+5. How were the reported values collected and mapped to the same metric?
+6. How were units, currencies, periods and definitions checked?
+7. Where were page, sheet and cell references recorded?
+8. How were exceptions assigned, resolved and retained?
+9. Which steps still required repeated manual checking?
+10. What was the last discrepancy or evidence gap that took time to resolve?
+11. How often does this workflow recur across mandates?
+12. Which internal templates, spreadsheets or third-party tools already solve parts of it?
+13. What do those methods do well, and what remains unresolved?
+14. What would a useful external review deliverable contain?
+15. Who owns the budget and approval route for a paid, fixed-scope review?
 
 ## Evidence to capture
 
-For each interview, record:
-- role and decision authority;
-- workflow and system category;
-- recent concrete event;
-- existing process and tools;
-- repeated manual steps;
-- cost, delay or risk evidence (only if the buyer can substantiate it);
-- data and access constraints;
-- frequency of re-testing;
-- budget owner;
-- explicit next step.
+- Firm and interviewee role.
+- Documents and metrics included in the review.
+- Current process, tools and reviewer responsibilities.
+- A recent non-confidential example of friction.
+- Manual effort, rework or delay only where the buyer can substantiate it.
+- Frequency and next expected trigger.
+- Existing alternatives and why they are insufficient, if applicable.
+- Budget owner and approval route.
+- Whether the buyer is willing to scope paid work.
 
-Separate direct buyer statements from our interpretation. Do not convert a polite expression of interest into demand.
+Separate direct buyer statements from analyst interpretation. Do not treat polite interest as demand.
 
 ## Qualification rules
 
 A buyer is qualified only when:
-- they own or materially influence a third-party AI acceptance decision;
-- they describe a recent concrete workflow;
-- the same pain recurs or a specific upcoming decision creates urgency;
-- existing tooling/processes leave a material gap;
-- they can provide an approved non-confidential sample or structured schema;
-- a budget owner is identifiable;
-- they are willing to discuss a paid pilot.
+- the interviewee owns or materially influences transaction-pack review;
+- the team performs cross-document financial tie-outs;
+- a recent concrete friction point is described;
+- the gap is not already adequately solved by current tools;
+- the workflow recurs or has an upcoming mandate/revision trigger;
+- a budget owner or approval route is identifiable;
+- the buyer is willing to discuss a paid pilot.
 
 ## Go / no-go thresholds
 
-Proceed to a focused paid pilot when:
-- at least five relevant interviews are completed;
-- at least three independent buyers describe the same material workflow failure;
-- at least two can provide a non-confidential sample protocol/schema;
-- at least one qualified buyer is willing to scope a paid pilot.
+Proceed to a paid pilot only after:
+- five relevant practitioner conversations;
+- at least three independent teams describe the same material recurring gap;
+- at least two can share a non-confidential schema or synthetic example;
+- at least one qualified buyer agrees to scope paid work through an authorised contracting route.
 
-Change or stop the product direction if buyers already solve the workflow adequately, cannot access supplier outputs, do not re-test after changes, or will not pay for an independent buyer-owned process.
+Change or stop the offer if existing processes solve the workflow adequately, buyers require capabilities the prototype does not provide, or no budget owner will pay for the output.
 
-## Outreach guardrails
+## Commercial and data guardrails
 
-Use individually researched, relevant contacts. Do not send mass generic messages. Do not claim customer results, product-market fit, certifications, security controls or integrations that have not been verified. An appropriately authorised adult/business representative should handle formal commercial commitments and any confidential-data arrangements.
+Do not request transaction files, client identities, financial figures or deal identifiers during discovery. Use synthetic examples or redacted schemas.
+
+The current prototype is not a secure deal room. An appropriately authorised adult/business representative must handle outreach that creates a commercial commitment, contracting, invoicing, payment, tax, confidentiality and client-data arrangements. A qualified finance professional must supervise substantive financial interpretation.
