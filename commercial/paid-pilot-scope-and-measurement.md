@@ -1,106 +1,92 @@
-# Paid pilot scope and value measurement
+# DealTie paid pilot scope and value measurement
 
 ## Offer
 
-**Buyer-owned AI support acceptance evidence review**
+**Pre-issue financial evidence tie-out** for a boutique M&A advisory or financial diligence team.
 
-A fixed-scope review of buyer-supplied test cases and structured run exports. The workbench applies the buyer-approved protocol, records explicit outcomes and compares the candidate run with the agreed baseline.
+A paid, fixed-scope review of selected headline financial metrics across up to three source documents: a CIM, QoE report and valuation model.
 
-This is not live vendor testing, integration validation, production monitoring, a safety certification or a regulatory compliance opinion.
+This is an analyst-supervised consistency review—not an audit, QoE engagement, accounting opinion, valuation opinion or transaction recommendation.
 
 ## Initial scope
 
-- One customer-support workflow: ticket classification and routing.
-- One buyer-approved acceptance protocol.
-- Up to 50 buyer-provided test cases.
-- Up to two structured system runs: two candidate suppliers, or an accepted baseline and a candidate change.
-- Deterministic checks for agreed structured fields and routing outcomes.
-- Human-review decisions supplied or approved by the buyer for subjective criteria.
-- One case-level comparison.
-- One JSON evidence package and one readable HTML report.
-- One review meeting to explain results, limitations and unresolved evidence.
+- One non-confidential or properly authorised and redacted document pack.
+- Up to 15 agreed headline metrics.
+- Up to three source documents.
+- One agreed period map and stated unit convention.
+- Source references at PDF page or Excel sheet/cell level where extractable.
+- Analyst-confirmed observation ledger.
+- Exception register showing reported values, sources, comparison values, spread, unit/period issue and unresolved question.
+- Tied / mismatch / insufficient-evidence classifications.
+- JSON evidence package, CSV observation register and standalone HTML review report.
+- One reviewer walkthrough and one correction pass.
 
-Out-of-scope work requires a separate written scope.
+Any change to document count, metric count, extraction requirements, reviewer time or deliverables requires a revised written scope.
 
-## Buyer responsibilities
+## Buyer inputs
 
-The buyer or its authorised technical team must:
-- execute the system tests in its approved environment;
-- export the structured outputs for each test case;
-- provide expected outcomes and the approved protocol;
-- identify system, model, prompt, workflow and configuration versions where available;
-- provide human-review decisions for subjective criteria;
-- approve the data-handling and access route before any data is shared.
+- Source documents in supported formats, supplied only through an approved and authorised route.
+- Agreed metric names, periods and units.
+- Any known mapping between source labels and the agreed metric names.
+- A qualified finance reviewer who can confirm financial meaning and resolve interpretation questions.
+- The buyer's existing tie-out process and baseline effort, if value measurement is requested.
 
-The current application does not execute tests against live supplier systems and has no production connectors. It cannot validate actual backend state, integration latency or live traffic.
+Initial scoping should use synthetic examples, a redacted schema or non-confidential material. Do not upload confidential transaction files to the public prototype.
 
 ## Deliverables
 
-1. Acceptance protocol with stable ID and version.
-2. Input/schema and coverage review.
-3. Case-level PASS / FAIL / INSUFFICIENT EVIDENCE outcomes.
-4. Criterion-level pass rates and hard-gate results.
-5. Baseline-versus-candidate regression and resolution register.
-6. Human-review record and missing-evidence register.
-7. JSON evidence export and HTML report.
-8. Limitations and buyer decision handoff.
+1. Confirmed observation ledger.
+2. Source-linked exception register.
+3. Metric-by-metric status and comparison explanation.
+4. Open questions, exclusions and data-quality limitations.
+5. JSON, CSV and standalone HTML outputs.
+6. Reviewer walkthrough and one correction pass.
+
+A finding is an investigation lead. It is not proof of an error, misstatement, financial loss or recoverable amount.
 
 ## Completion criteria
 
 The pilot is complete when:
-- agreed inputs are received and validated;
-- each applicable case/criterion pair has a visible outcome or explicit missing-evidence status;
-- all decision rules are disclosed;
-- baseline/candidate differences are traceable;
-- the evidence package is delivered;
-- the buyer has had the review meeting.
+- every agreed metric has a source observation or is explicitly marked unavailable;
+- each observation has a source reference where extractable;
+- comparison rules and tolerance are stated;
+- every exception shows its contributing observations;
+- unresolved questions and limitations are listed;
+- exported files contain the same findings as the review screen;
+- the buyer has received the walkthrough and correction pass.
 
-The buyer retains the acceptance and deployment decision.
+Acceptance does not mean every metric ties or that any exception is a confirmed financial error.
 
 ## Value measurement
 
-Capture the buyer's current baseline before work begins. Measure only values the buyer can substantiate.
+Measure only what the buyer can substantiate. Record the current process before the pilot and compare like-for-like work.
 
 | Measure | Baseline | Pilot result |
 |---|---|---|
-| Staff hours spent assembling evidence | Buyer-provided | Timed/recorded |
-| Time from run completion to approval-ready evidence | Buyer-provided | Timed/recorded |
-| Cases with complete expected/observed evidence | Buyer-provided | Calculated from supplied files |
-| Critical failures visible before decision | Prior process record | Pilot findings |
-| Missing evidence and unresolved cases | Prior process record | Pilot findings |
-| Manual handoffs needed to complete review | Buyer-provided | Recorded |
+| Staff time spent assembling the tie-out | Buyer-recorded | Timed/recorded |
+| Time to produce a review-ready exception list | Buyer-recorded | Timed/recorded |
+| Agreed metrics with source references | Existing process | Calculated from delivered ledger |
+| Exceptions with complete contributing source rows | Existing process | Calculated from delivered register |
+| Unresolved unit, period or coverage questions | Existing process | Recorded in report |
+| Reviewer corrections required | Existing process | Recorded during walkthrough |
 
-Do not convert a detected discrepancy into financial savings unless the buyer confirms the financial impact and the counterfactual.
+Do not claim savings, accuracy, prevented losses or recovered value without buyer-verified evidence and a defensible counterfactual.
 
 ## Commercial terms
 
 - Paid fixed-scope engagement.
-- Fee and delivery schedule agreed privately after a non-confidential schema review.
-- No free proof of concept.
-- No public price or savings claims.
+- Fee and delivery schedule agreed privately after a non-confidential scoping discussion.
+- No free proof-of-concept and no public price claim.
 - Scope changes require written agreement.
+- Contracting, invoicing, payment, tax, confidentiality and client-data arrangements must be handled by an appropriately authorised adult/business representative.
+- Qualified finance professionals must supervise substantive financial interpretation.
 
-An appropriately authorised adult/business representative must handle contracting, invoicing, payment, tax, confidentiality and data-processing arrangements.
+## Repeat-work hypothesis
 
-## Data and security gate
+The natural repeat trigger is a new transaction mandate, a materially revised document pack or a pre-circulation quality-control review. Offer repeat work only after the first engagement demonstrates value and the buyer confirms the trigger, owner and budget. Do not present a subscription as validated demand.
 
-Do not accept personal, customer, confidential or regulated data until the authorised representative has approved:
-- lawful permission and purpose;
-- data minimisation and redaction;
-- secure transfer and access controls;
-- encryption and storage location;
-- retention and deletion schedule;
-- logging, backups and incident process;
-- confidentiality and contractual terms.
+## Data and professional boundaries
 
-Use synthetic or non-confidential schemas for initial scoping.
+The current application is a prototype, not a secure transaction environment. It does not provide authentication, role-based access, encryption-at-rest, secure deal-room controls, multi-user review or audit-grade history. Do not accept confidential live deal materials until an authorised representative has approved written terms and suitable security, access, retention and deletion controls.
 
-## Subscription trigger
-
-Offer a subscription only if the pilot reveals a recurring workflow and the buyer identifies:
-- a predictable re-test trigger;
-- a recurring owner and budget;
-- a need to preserve protocol and evidence history;
-- a reason the current stack is insufficient.
-
-A second paid engagement or explicit renewal commitment is required before describing the model as repeatable.
+No scanned-PDF OCR, semantic metric matching, currency/scale/period conversion, formula evaluation, accounting judgement or source hierarchy inference is performed.
