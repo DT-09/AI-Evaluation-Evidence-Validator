@@ -16,12 +16,19 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "Request origin could not be verified." }, 403);
   }
 
-  const contentLength = Number(request.headers.get("content-length") || 0);
-  if (contentLength > 8192) return json({ error: "Inquiry is too large." }, 413);
+  let rawBody;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return json({ error: "Invalid inquiry format." }, 400);
+  }
+  if (new TextEncoder().encode(rawBody).byteLength > 8192) {
+    return json({ error: "Inquiry is too large." }, 413);
+  }
 
   let body;
   try {
-    body = await request.json();
+    body = JSON.parse(rawBody);
   } catch {
     return json({ error: "Invalid inquiry format." }, 400);
   }
