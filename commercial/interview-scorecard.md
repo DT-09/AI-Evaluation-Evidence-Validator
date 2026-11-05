@@ -1,104 +1,99 @@
-# Buyer interview guide and evidence scorecard
+# DealTie — buyer interview guide and evidence scorecard
 
 ## Purpose
 
-Test whether buyer-owned acceptance evidence across third-party AI support suppliers and system changes is a recurring, costly problem that existing tools do not adequately solve.
+Test whether a boutique M&A advisory or financial diligence team has a recurring, costly cross-document tie-out problem that a narrow, source-linked review can solve.
 
-Do not demonstrate the product at the start. Reconstruct the buyer's last real decision.
+Do not demonstrate the product first. Reconstruct the buyer's last real transaction-pack review. Do not request confidential deal details.
 
 ## Opening
 
-"We are researching how customer-operations teams evaluate and re-approve AI-enabled support workflows when they select a supplier or a system changes. I am not assuming your process has a gap. I would like to understand the last real evaluation or change you handled."
-
-Ask permission to take notes. Do not ask for confidential information.
+"We are researching how transaction teams check that selected financial metrics remain consistent across the CIM, QoE report and valuation model before materials are circulated. I am not assuming your process has a gap. Could you walk me through the last review you completed, without sharing confidential transaction information?"
 
 ## Interview questions
 
-### A. Recent event and decision owner
-1. What was the most recent AI-enabled support system you evaluated, deployed or materially changed?
-2. What workflow did it perform: classification, routing, knowledge answers, case resolution, voice, or another task?
-3. What decision were you making, and who had final approval?
-4. Which supplier, model, configuration or workflow versions were involved?
+### A. Workflow and ownership
+1. Which documents are normally compared before a pack is circulated?
+2. Who owns the final consistency review?
+3. Which metrics receive a formal tie-out (revenue, EBITDA, net debt, working capital, etc.)?
+4. At what point in the deal process does the review happen?
 
-### B. Acceptance process
-5. How did you define acceptable performance before approval?
-6. Who created the test cases and expected outcomes?
-7. Did the supplier provide its own evaluation results? What did your team independently verify?
-8. How did you test policy compliance, escalation, permissions, integrations and actual task outcomes?
-9. What evidence was retained, and where?
+### B. Current method
+5. How are figures extracted from the CIM, QoE and model?
+6. Is there a standard checklist, workbook or review template?
+7. How are periods, currencies, units and definitions checked?
+8. How are page, sheet and cell references retained?
+9. How are exceptions assigned, resolved and signed off?
 
-### C. Change and failure
-10. What happened the last time the model, prompt, workflow, integration or policy changed?
-11. Did you re-run the same cases? If not, why not?
-12. How did you identify regressions against the previously accepted version?
-13. Describe one failure that was difficult to detect before it affected operations.
-14. What was the consequence: rework, delay, customer impact, cost, risk or a blocked launch? Use only figures the buyer can substantiate.
+### C. Friction and consequence
+10. Which part requires the most repeated manual effort?
+11. What was the last discrepancy that took time to resolve? Describe it without naming the client or deal.
+12. How often do missing references, inconsistent units or period mismatches occur?
+13. What happens when an inconsistency is found late?
+14. Can the team quantify review time, rework or delay from a recent example?
 
-### D. Existing tools and gap
-15. Which products, internal QA processes, spreadsheets, dashboards or consultants already support this work?
-16. What does each tool do well?
-17. What still requires manual effort or falls between teams?
-18. Could your current stack produce a buyer-owned, versioned acceptance record across suppliers and releases? If not, what exactly is missing?
-19. Would a new tool duplicate an existing platform capability?
+### D. Existing alternatives
+15. Which internal tools, templates or external providers already solve parts of this workflow?
+16. What do those methods do well?
+17. What remains manual or difficult to audit?
+18. Would a source-linked exception register duplicate an existing process?
 
-### E. Recurrence and willingness to pay
-20. How often does this review happen?
-21. What triggers the next review?
-22. Who owns the budget for acceptance testing or change assurance?
-23. Have you paid an external party for similar work?
-24. What would a useful paid review need to deliver?
-25. Would you consider a scoped paid pilot? What procurement and security steps would apply?
+### E. Recurrence and paid intent
+19. How many relevant document packs does the team review in a typical month or quarter?
+20. What event triggers the next review?
+21. Who owns the budget for analyst support or quality-control work?
+22. Has the firm paid for similar review support before?
+23. What deliverable would make an external tie-out useful?
+24. Would the firm consider a paid, fixed-scope pilot? What approval route applies?
 
 ## Evidence scorecard
 
-Score each category 0–2. Record the buyer's exact evidence separately from the interviewer's interpretation.
+Score each category 0–2. Keep direct buyer statements separate from interpretation.
 
 | Category | 0 | 1 | 2 |
 |---|---|---|---|
-| Decision ownership | No authority or access | Influences decision | Owns or co-owns acceptance |
-| Recent trigger | No real example | Older or indirect example | Recent, specific evaluation/change |
-| Recurring failure | No gap | General dissatisfaction | Specific repeatable failure |
-| Existing-tool gap | Current process adequate | Some manual workaround | Material unresolved gap |
-| Recurrence | One-off | Occasional | Regular or trigger-based repeat |
-| Evidence access | No export/schema access | Possible with approval | Non-confidential sample/schema available |
-| Budget | No owner | Owner unclear | Identified budget owner |
-| Paid intent | No interest | General interest | Will scope paid work |
+| Workflow ownership | No involvement | Participates | Owns or approves review |
+| Recent example | None | General example | Specific recent review |
+| Recurring friction | No gap | Minor inconvenience | Material repeatable manual work |
+| Evidence traceability | Existing process is complete | Partial source trail | Material source-reference gap |
+| Existing-tool gap | Current process adequate | Workaround needed | Clear unresolved gap |
+| Recurrence | One-off | Occasional | Regular transaction cadence |
+| Budget route | None known | Unclear | Identified budget owner |
+| Paid intent | No interest | Wants more information | Will scope a paid pilot |
 
-Maximum: 16. A high score does not replace the qualification gates below.
+Maximum: 16. A high score is not a purchase commitment.
 
 ## Qualification gates
 
-A prospect counts as a qualified discovery interview only if they have:
-- direct responsibility or material influence over the workflow;
-- a recent concrete evaluation or system change;
-- a specific gap not adequately solved by existing tools;
-- a recurring trigger or upcoming decision;
-- a plausible route to approved sample/schema access;
-- an identifiable budget owner.
+Count a conversation as qualified only if the person:
+- owns or materially influences the review;
+- describes a recent, concrete example;
+- identifies a recurring gap not adequately solved by current tools;
+- has a plausible upcoming trigger;
+- identifies a budget owner or approval route;
+- is willing to discuss a bounded paid scope.
 
-A buyer counts as paid-pilot qualified only when they agree to discuss a paid, bounded scope with an authorised contracting route.
+Count a buyer as pilot-qualified only when they agree to scope paid work through an authorised contracting route.
 
-## Interview record template
+## Interview record
 
-- Organisation:
-- Interviewee and current role:
+- Firm:
+- Interviewee / role:
 - Date:
-- Decision authority:
-- System/workflow:
-- Last concrete evaluation/change:
-- Acceptance criteria used:
-- Existing tools/process:
-- Specific failure and evidence:
-- Time/cost/risk consequence:
-- Frequency/next trigger:
-- Data/export availability:
-- Budget owner:
+- Relevant transaction workflow:
+- Documents and metrics reviewed:
+- Current process and tools:
+- Recent friction (non-confidential):
+- Time / rework consequence:
+- Review frequency:
+- Existing alternatives:
+- Budget owner / approval route:
 - Score / 16:
-- Qualification: yes/no and reason:
+- Qualification and evidence:
 - Agreed next step:
 - Direct buyer statements:
-- Interviewer interpretation:
+- Analyst interpretation:
 
 ## Stop conditions
 
-Do not force the product into the conversation. If the buyer already has a clean process, say so in the record. If the issue is integration testing, live monitoring or semantic evaluation, do not pretend the current CSV workbench solves it. Record the requirement as a product gap or disqualifier.
+Do not force the product into a workflow it does not support. If buyers require semantic metric matching, formula auditing, secure deal-room hosting, accounting judgement or a full QoE engagement, record that as a gap or disqualifier. Do not claim the current prototype provides those capabilities.
