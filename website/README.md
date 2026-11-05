@@ -1,21 +1,34 @@
-# Public website
+# DealTie public website
 
-This directory contains the single public-facing website for AI Acceptance Assurance.
+This directory contains the public marketing and private inquiry pages for DealTie Financial Evidence Reconciliation.
 
-## Preview locally
+## Buyer journey
 
-Open `index.html` in a modern browser. It is a self-contained static page; no build step or third-party JavaScript dependency is required.
+1. Read the product problem and supported workflow on `index.html`.
+2. Inspect the synthetic sample and complete example report.
+3. Review the exact paid pilot scope and product limitations.
+4. Submit a non-confidential inquiry through `pilot.html`.
+5. An authorised business representative scopes the paid engagement, fee, delivery schedule, contract and data route before work begins.
 
-## Deployment
+The website does not sell self-serve access or accept deal files. The current Streamlit workbench is an analyst prototype and must be used with synthetic or properly redacted/authorised data only.
 
-Deploy the `website/` directory as the static site root on the selected hosting provider. The site is not deployed by this repository change.
+## Cloudflare Pages
 
-Before public launch:
-- Confirm the project contact route and the adult-authorised person who will manage enquiries.
-- Review privacy, terms, data handling, retention and security statements against the actual operating process.
-- Confirm the hosting provider's access controls and deployment configuration.
-- Do not accept confidential or personal data through public enquiry channels.
-- Keep the demonstration data labelled synthetic.
-- Re-check every product capability and limitation against the current application before publishing.
+- Project root / output directory: `website`.
+- Build command: none.
+- Pages Functions directory: `website/functions`.
+- Inquiry endpoint: `POST /api/pilot-inquiry`.
 
-The site intentionally describes the current product boundary: structured buyer-provided exports are evaluated; the workbench does not run or connect to live supplier systems.
+Configure encrypted Production environment variables as described in `commercial/deployment-checklist.md`. The endpoint sends limited inquiry details through Resend; it does not store inquiry contents or accept attachments.
+
+## Release checks
+
+- Verify the public homepage, pilot page and sample report.
+- Test mobile navigation and sample filters.
+- Submit a synthetic inquiry and verify delivery.
+- Confirm missing environment variables produce an explicit error.
+- Do not publish a form as operational until its email route has been tested.
+- Configure rate limiting/WAF for the inquiry endpoint.
+- Re-check product claims against the current application.
+
+A GitHub commit does not deploy the Cloudflare Pages site. Verify the Pages project and live deployment separately.
