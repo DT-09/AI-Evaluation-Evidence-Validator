@@ -31,6 +31,7 @@ Use **Load synthetic example** to inspect the complete workflow without client d
 5. Compare observations using an explicit numeric tolerance and deterministic rules.
 6. Review every finding alongside its source observations.
 7. Export JSON, CSV and a readable HTML review report.
+8. Open the Streamlit **Version Impact** page to compare analyst-confirmed baseline/current versions and classify exact downstream references for human review.
 
 Extraction does not determine financial meaning. The analyst remains responsible for mapping and interpretation.
 
@@ -44,6 +45,10 @@ Extraction does not determine financial meaning. The analyst remains responsible
 - `INSUFFICIENT_COVERAGE`: fewer than two distinct source documents are represented.
 
 The engine does not infer scale, currency, period equivalence, source hierarchy or which figure is correct. Findings are ordered by a transparent workflow triage priority: comparison conflicts first, evidence-quality issues next, incomplete coverage after that, and tied metrics last. This is not a financial materiality or risk score.
+
+## Version impact workflow
+
+The Streamlit multipage application includes `dealtie/pages/2_Version_Impact.py`. It accepts a CSV with `document_family,version,document,metric,period,value,unit,source_ref`, compares two selected versions of a source family, and classifies downstream references as `STALE_CANDIDATE`, `ALIGNED_TO_CURRENT`, `OTHER_VALUE` or `INSUFFICIENT_EVIDENCE`. Exact metric and period matching only; no semantic matching, unit conversion or source-authority inference. See [the engine specification](PRODUCT_AND_ENGINEERING.md).
 
 ## CSV schema
 
@@ -79,7 +84,7 @@ A successful repository build is not proof of a successful live deployment. Veri
 
 The initial offer is a tightly scoped, paid, analyst-supervised tie-out review for a boutique advisory or diligence team. Scope and fee are agreed only after a non-confidential scoping discussion. No customer, revenue, savings or validated willingness to pay is claimed.
 
-See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commercial/dealtie-paid-pilot.md), [the deployment checklist](commercial/deployment-checklist.md), [the M&A tie-out service page](website/cim-qoe-model-tie-out.html), [the printable tie-out checklist](website/resources/tie-out-checklist.html), [the complete synthetic review](website/sample-review.html), [the private pilot inquiry page](website/pilot.html) and [the website](website/index.html).
+See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commercial/dealtie-paid-pilot.md), [the deployment checklist](commercial/deployment-checklist.md), [the M&A tie-out service page](website/cim-qoe-model-tie-out.html), [the printable tie-out checklist](website/resources/tie-out-checklist.html), [the complete synthetic review](website/sample-review.html), [the private pilot inquiry page](website/pilot.html) and [the website](website/index.html), [version change control](website/version-change-control.html) and [the engineering specification](PRODUCT_AND_ENGINEERING.md).
 
 ## Repository history
 
