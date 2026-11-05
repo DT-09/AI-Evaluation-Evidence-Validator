@@ -1,41 +1,86 @@
 # DealTie — paid pilot offer
 
-## Offer
+## The service
+
 **Pre-issue financial evidence tie-out** for a boutique M&A advisory or financial diligence team preparing or reviewing a transaction document pack.
 
-This is a narrowly scoped, analyst-supervised consistency review—not a QoE engagement, audit, valuation opinion, accounting review or diligence conclusion.
+The engagement checks whether an agreed set of headline financial observations is consistent across up to three source documents. It produces a review-ready evidence register with source references and explicit unresolved questions.
 
-## Initial pilot scope
-- One non-confidential or properly authorised transaction document pack.
-- Up to 15 agreed headline metrics (for example revenue, gross profit, EBITDA, adjusted EBITDA, net debt and working capital).
+This is a narrow analyst-supervised consistency review—not an audit, QoE engagement, accounting opinion, valuation opinion or transaction recommendation.
+
+## Scope
+
+One fixed-scope pilot:
+- One non-confidential or properly authorised and redacted document pack.
+- Up to 15 agreed headline metrics.
 - Up to three source documents: CIM, QoE report and valuation model.
 - One agreed period map and unit convention.
-- Source references captured as PDF page or Excel sheet/cell where extractable.
-- Exception register showing the reported value, source, comparison value, difference, unit/period issue and unresolved question.
+- Source references at PDF page or Excel sheet/cell level where extractable.
+- Analyst-confirmed observation ledger.
+- Exception register showing reported values, sources, comparison values, spread, unit/period issue and unresolved question.
 - One reviewer walkthrough and one correction pass.
 
 ## Deliverables
-1. Confirmed observation ledger.
-2. Exception register with source references.
-3. Tied / mismatch / insufficient-evidence status by metric.
-4. Open questions and exclusions.
-5. Exportable CSV/JSON evidence package.
 
-## Pilot acceptance
-The pilot is complete when every agreed metric has a documented source reference or is explicitly marked unavailable; comparison logic is reproducible; and all exceptions are visible for the client's qualified reviewer.
+1. Confirmed observation ledger (CSV).
+2. Exception register with source references and deterministic status.
+3. Metric-by-metric review summary: tied, value mismatch, unit mismatch, missing/non-numeric, duplicate source or insufficient coverage.
+4. Open questions, exclusions and limitations.
+5. Machine-readable JSON evidence package and standalone HTML review report.
+6. Reviewer walkthrough and one correction pass.
+
+## Why a buyer may pay
+
+The buyer is not paying for another dashboard. They are paying for a bounded review output that:
+- consolidates selected figures from three document types;
+- makes each comparison inspectable against its source;
+- exposes unit, coverage and reference gaps instead of silently guessing;
+- gives the reviewer a structured exception list to resolve;
+- creates a handoff record that can be retained with the team's review materials.
+
+The pilot should be purchased only if this output improves on the buyer's existing workflow. That value must be established in scoping, not asserted in advance.
+
+## Acceptance criteria
+
+The pilot is complete when:
+- every agreed metric has a documented source observation or is explicitly marked unavailable;
+- each observation has its source reference where extractable;
+- comparison rules and tolerance are stated;
+- every exception is visible with its contributing observations;
+- unresolved questions and limitations are listed;
+- the agreed exports open and contain the same findings as the review screen;
+- the buyer has received the walkthrough and correction pass.
+
+Acceptance does not mean every metric ties or that an exception is a confirmed error.
 
 ## Commercial terms
-Paid fixed-scope pilot. Fee and timing are agreed after a non-confidential scoping discussion. No unpaid proof-of-concept is offered. Any fee, contract, payment, confidentiality and client-data arrangements must be handled by an appropriately authorised adult/business representative. A qualified finance professional must supervise and approve any substantive financial interpretation.
 
-## Required safeguards
-- No live deal files in the current prototype.
-- Start with synthetic or redacted sample data.
-- Do not claim detected differences are errors, misstatements, overpayments or value leakage.
-- No accounting conclusions, valuation advice, audit procedures or QoE opinions.
-- No confidential files until a qualified adult representative approves written terms and secure handling.
+Paid fixed-scope pilot. Fee and delivery schedule are agreed privately after a non-confidential scoping discussion. No public price or guaranteed savings claim is made.
 
-## Why a buyer might test this
-A small advisory team may want a second-pass tie-out register across a defined set of metrics without buying a broad platform or changing its deal process. This is a hypothesis to test—not evidence of demand.
+Any engagement, fee, contract, payment, confidentiality or client-data arrangement must be handled by an appropriately authorised adult/business representative. A qualified finance professional must supervise and approve substantive financial interpretation.
 
-## Kill criteria
-Do not proceed if the buyer already has a satisfactory tie-out workflow, expects full PDF/XLSX semantic automation, requires secure deal-room hosting, or wants accounting conclusions outside the team's qualifications.
+## Data and professional boundaries
+
+- The current application is a prototype, not a secure transaction environment.
+- Do not upload confidential deal files to the public prototype.
+- Begin with synthetic data, a redacted schema or properly authorised and redacted material under written terms approved by the authorised representative.
+- No scanned-PDF OCR, semantic metric matching, currency conversion, formula evaluation, accounting judgement or source hierarchy inference.
+- A mismatch is an investigation lead—not proof of error, misstatement, loss or recoverable amount.
+- Do not describe outputs as audit-ready or production-secure.
+
+## Scoping checklist
+
+Before quoting or accepting the work, confirm:
+- document types and file formats;
+- exact metrics and periods;
+- units and currency conventions;
+- source-reference expectations;
+- buyer's existing review process;
+- authorised data-handling route;
+- qualified reviewer;
+- delivery window and acceptance criteria;
+- authorised contracting and payment representative.
+
+## Disqualifiers
+
+Do not proceed if the buyer requires confidential files to be uploaded to the current public prototype, expects automated accounting conclusions, needs full semantic extraction or formula auditing, or cannot authorise the data and commercial arrangements.
