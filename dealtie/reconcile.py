@@ -1,22 +1,43 @@
 """Deterministic, analyst-confirmed financial observation comparison."""
 from collections import defaultdict
 from decimal import Decimal, InvalidOperation
+import re
+
+
+_NUMBER = re.compile(r"^[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)$")
 
 
 def _num(value):
-    """Parse a plain financial number without guessing scale or currency."""
+    """Parse a plain financial number without guessing currency or scale.
+
+    Currency symbols are deliberately rejected: currency belongs in the
+    explicit unit field. Commas are accepted only as valid thousands
+    separators, so malformed values are never reinterpreted.
+    """
     if value is None:
         return None
     raw = str(value).strip()
     if not raw:
         return None
-    raw = raw.replace(",", "").replace("$", "").replace("€", "").replace("£", "").strip()
-    if raw.startswith("(") and raw.endswith(")"):
-        raw = "-" + raw[1:-1].strip()
-    if raw.endswith("%") or raw.endswith("x") or raw.endswith("X"):
+
+    negative_parentheses = raw.startswith("(") and raw.endswith(")")
+    if negative_parentheses:
+        raw = raw[1:-1].strip()
+        if not raw or raw.startswith(("+", "-")):
+            return None
+
+    if raw.endswith(("%", "x", "X")):
         raw = raw[:-1].strip()
+
+    if not _NUMBER.fullmatch(raw):
+        return None
+
+    normalized = raw.replace(",", "")
+    if negative_parentheses:
+        normalized = "-" + normalized
+
     try:
-        number = Decimal(raw)
+        number = Decimal(normalized)
     except (InvalidOperation, ValueError):
         return None
     return number if number.is_finite() else None
@@ -29,7 +50,10 @@ def reconcile(observations, tolerance=Decimal("0.01")):
     are excluded. Duplicate document/source references are surfaced rather
     than silently counted as independent evidence.
     """
-    tolerance = Decimal(str(tolerance))
+    try:
+        tolerance = Decimal(str(tolerance))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise ValueError("tolerance must be a finite, non-negative number") from exc
     if not tolerance.is_finite() or tolerance < 0:
         raise ValueError("tolerance must be a finite, non-negative number")
 
@@ -77,7 +101,7 @@ def reconcile(observations, tolerance=Decimal("0.01")):
             explanation = "Sources use different units; no conversion was attempted."
         elif len(numeric_values) != len(rows):
             status = "MISSING_OR_NON_NUMERIC"
-            explanation = "At least one value is blank or non-numeric."
+            explanation = "At least one value is blank, malformed or non-numeric."
         elif max(numeric_values) - min(numeric_values) > tolerance:
             status = "VALUE_MISMATCH"
             explanation = f"Observed spread: {max(numeric_values) - min(numeric_values)} {rows[0]['unit']}."
