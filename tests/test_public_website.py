@@ -39,13 +39,13 @@ class PublicWebsiteTests(unittest.TestCase):
         required={"top","problem","workflow","demo","scope","deliverables"}
         self.assertTrue(required.issubset(set(self.parser.ids)))
     def test_paid_offer_is_explicit_and_scoped(self):
-        self.assertIn("paid, fixed-scope",self.html.lower())
+        self.assertIn("paid fixed-scope review",self.html.lower())
         self.assertIn("up to 15 agreed metrics",self.html.lower())
         self.assertIn("one correction pass",self.html.lower())
         pilot=(SITE.parent / "pilot.html").read_text(encoding="utf-8").lower()
         self.assertIn("paid, fixed-scope financial tie-out",pilot)
         self.assertIn("do not submit confidential information",pilot)
-        self.assertIn("send private inquiry",pilot)
+        self.assertIn("discuss a paid pilot",pilot)
     def test_ids_are_unique(self):
         self.assertEqual(len(self.parser.ids),len(set(self.parser.ids)))
     def test_internal_navigation_targets_exist(self):
