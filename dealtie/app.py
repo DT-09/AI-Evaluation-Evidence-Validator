@@ -234,6 +234,7 @@ if st.session_state.results is not None:
     metric_cols[3].metric("Tied", int(counts.get("TIED", 0)))
     if results:
         st.dataframe(pd.DataFrame([{
+            "Review priority":f"P{r['review_priority']} · {r['review_priority_label']}",
             "Metric":r["metric"], "Period":r["period"], "Status":r["status"],
             "Sources":r["source_count"], "Observations":r["observation_count"],
             "Explanation":r["explanation"]
@@ -268,7 +269,10 @@ if st.session_state.results is not None:
         for observation in finding["observations"]:
             flat.append({
                 "metric":finding["metric"], "period":finding["period"],
-                "status":finding["status"], "explanation":finding["explanation"],
+                "status":finding["status"],
+                "review_priority":finding["review_priority"],
+                "review_priority_label":finding["review_priority_label"],
+                "explanation":finding["explanation"],
                 "document":observation["document"], "value":observation.get("value"),
                 "unit":observation["unit"], "source_ref":observation.get("source_ref", "")
             })
