@@ -60,6 +60,11 @@ Any contract, fee, payment, confidentiality or client-data arrangement must be h
 
 | Account | Contact / role | Workflow evidence | Contacted | Qualified | Paid scope discussed |
 |---|---|---|---|---|---|
-| — | — | — | No | No | No |
+| ABS Advisors Group | Not yet identified | Publicly lists QoE, CIM, valuation and diligence services; potential overlap | No | No | No |
+| Hansen Advisory | Not yet identified | Publicly lists buy-side/sell-side QoE and financial pressure-testing | No | No | No |
+| Simion Advisory Partners | Not yet identified | Publicly lists M&A advisory, QoE, models and valuation | No | No | No |
+| Intuition Consulting | Not yet identified | Publicly references M&A, CIMs, models and valuation | No | No | No |
+| MP Advisory | Not yet identified | Publicly lists sell-side M&A, financial models and CIM preparation | No | No | No |
+| Corvian Advisory | Not yet identified | Publicly lists M&A, financial due diligence, QoE and valuation | No | No | No |
 
 No contact has been sent and no response is implied by this document.
