@@ -95,6 +95,36 @@ class ReconcileTests(unittest.TestCase):
         ])
         self.assertEqual(result[0]["status"], "DUPLICATE_SOURCE_ENTRY")
 
+    def test_findings_are_ordered_by_review_priority(self):
+        rows = [
+            self.row("CIM", "100", metric="F Tied"),
+            self.row("QoE", "100", metric="F Tied"),
+            self.row("CIM", "100", metric="A Value"),
+            self.row("QoE", "90", metric="A Value"),
+            self.row("CIM", "100", metric="B Unit"),
+            self.row("Model", "100", unit="EUR m", metric="B Unit"),
+            self.row("CIM", "100", metric="C Duplicate", source_ref="p.1"),
+            self.row("CIM", "100", metric="C Duplicate", source_ref="p.1"),
+            self.row("QoE", "100", metric="C Duplicate", source_ref="p.2"),
+            self.row("CIM", "", metric="D Missing"),
+            self.row("QoE", "100", metric="D Missing"),
+            self.row("CIM", "100", metric="E Coverage"),
+        ]
+        findings = reconcile(rows)
+        self.assertEqual(
+            [item["status"] for item in findings],
+            [
+                "VALUE_MISMATCH",
+                "UNIT_MISMATCH",
+                "DUPLICATE_SOURCE_ENTRY",
+                "MISSING_OR_NON_NUMERIC",
+                "INSUFFICIENT_COVERAGE",
+                "TIED",
+            ],
+        )
+        self.assertEqual([item["review_priority"] for item in findings], [1, 1, 2, 2, 3, 4])
+        self.assertEqual(findings[0]["review_priority_label"], "Resolve comparison")
+
     def test_same_metric_different_periods_are_separate(self):
         result = reconcile([
             self.row("CIM", "100", period="FY2024"),
