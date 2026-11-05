@@ -9,6 +9,8 @@ class ReportTests(unittest.TestCase):
             "metric": "Adjusted EBITDA",
             "period": "FY2025",
             "status": "VALUE_MISMATCH",
+            "review_priority": 1,
+            "review_priority_label": "Resolve comparison",
             "explanation": "Observed spread: 0.8 USD m.",
             "observations": [{
                 "document": "QoE final",
