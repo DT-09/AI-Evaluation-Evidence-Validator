@@ -28,9 +28,9 @@ footer{background:#100f0d;color:#a9a69b;padding:25px 0;font-size:10px}.foot{disp
 <header class="top"><nav class="wrap"><a class="brand" href="index.html">DEALTIE</a><a class="back" href="index.html">← Back to overview</a></nav></header>
 <main class="wrap">
 <div class="eyebrow">Private pilot discussion / non-confidential only</div>
-<h1>Start with the review.<br>Not a sales pitch.</h1>
-<p class="lead">DealTie is offered as a paid, fixed-scope financial tie-out—not a free dashboard or open-ended software trial. This form starts a non-confidential scoping discussion. If the workflow fits, an authorised business representative will agree the fee, delivery schedule and engagement terms before any work begins.</p>
-<div class="notice"><strong>Please do not submit confidential information.</strong> No deal names, client identities, financial figures, transaction identifiers, documents, attachments or personal data beyond the business contact fields requested below. Begin with a high-level description only.</div>
+<h1>A brief note is enough.<br>We will take it from there.</h1>
+<p class="lead">Tell us which financial document review workflow matters to your team. We will reply to discuss fit, scope and commercial terms. This is a non-binding enquiry, not an engagement.</p>
+<div class="notice"><strong>Please do not submit confidential information.</strong> Do not include client names, transaction details, financial figures or attachments. A short, high-level description is enough.</div>
 <div class="layout">
 <aside class="scope">
 <h2>The paid review deliverables</h2>
@@ -51,13 +51,12 @@ footer{background:#100f0d;color:#a9a69b;padding:25px 0;font-size:10px}.foot{disp
 <label for="company">Firm / organisation *</label><input id="company" name="company" maxlength="120" required autocomplete="organization" placeholder="Your firm">
 <label for="name">Your name *</label><input id="name" name="name" maxlength="100" required autocomplete="name" placeholder="Name">
 <label for="email">Business email *</label><input id="email" name="email" type="email" maxlength="254" required autocomplete="email" placeholder="name@firm.com">
-<label for="role">Your role *</label><select id="role" name="role" required><option value="">Select role</option><option>M&A partner / managing partner</option><option>Director / VP</option><option>Senior associate / analyst</option><option>Financial diligence lead</option><option>Other</option></select>
 <label for="workflow">What workflow is relevant? *</label><select id="workflow" name="workflow" required><option value="">Select workflow</option><option>Pre-issue CIM / QoE / model tie-out</option><option>Buy-side financial document review</option><option>Other cross-document financial review</option><option>Not sure yet</option></select>
-<label for="context">Current process (high-level, no deal details)</label><textarea id="context" name="context" maxlength="1800" placeholder="How does your team currently check selected figures across documents? Where does manual review remain?"></textarea>
+<label for="context">Current process (high-level, no deal details)</label><textarea id="context" name="context" maxlength="600" placeholder="What needs to be checked? (No deal details.)"></textarea>
 <label class="check"><input type="checkbox" name="acknowledged" required><span>I confirm that this inquiry contains no confidential transaction information and understand that this is a non-binding request for discussion.</span></label>
-<button id="submit" type="submit">Discuss a paid pilot</button>
+<button id="submit" type="submit">Send private enquiry</button>
 <div class="status" id="status" role="status" aria-live="polite"></div>
-<p class="small">The form sends this limited inquiry to the DealTie contact configured by the site operator. It does not upload files or store a deal-room record. Do not use it for confidential material.</p>
+<p class="small">Your enquiry is sent privately to the DealTie team. Your email address is used only to respond. No files are accepted.</p>
 </form>
 </section>
 </div>
@@ -73,7 +72,7 @@ form.addEventListener('submit',async event=>{
   const response=await fetch('/api/pilot-inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
   const result=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(result.error||'The inquiry could not be sent. Please try again later.');
-  form.reset();status.textContent='Inquiry sent. The configured DealTie contact can follow up using your business email.';
+  form.reset();status.textContent='Enquiry sent. We will reply to your business email.';
  }catch(error){status.textContent=error.message||'Unable to send the inquiry. Please try again later.';}
  finally{submit.disabled=false;}
 });
