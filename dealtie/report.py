@@ -40,6 +40,8 @@ def build_html_report(findings, tolerance="0.01", generated_at=None):
         metric = escape(str(finding.get("metric", "Unlabelled metric")))
         period = escape(str(finding.get("period", "Unspecified period")))
         explanation = escape(str(finding.get("explanation", "")))
+        priority = int(finding.get("review_priority", 4))
+        priority_label = escape(str(finding.get("review_priority_label", "No priority assigned")))
         observations = []
         for row in finding.get("observations", []):
             observations.append(
@@ -59,6 +61,7 @@ def build_html_report(findings, tolerance="0.01", generated_at=None):
         sections.append(
             f"<article class='finding'><div class='finding-head'><span class='number'>"
             f"{index:02d}</span><div><h2>{metric}</h2><p class='period'>{period}</p></div>"
+            f"<span class='priority'>P{priority} · {priority_label}</span>"
             f"<span class='status'>{escape(label)}</span></div><p>{explanation}</p>{table}</article>"
         )
 
@@ -78,10 +81,10 @@ main{{max-width:1080px;margin:0 auto;padding:48px 28px 72px}}header{{border-bott
 .finding{{margin:18px 0;padding:22px;background:var(--panel);border:1px solid var(--line);break-inside:avoid}}
 .finding-head{{display:flex;align-items:center;gap:14px}}.number{{font:italic 18px Georgia,serif;color:var(--accent)}}
 h2{{font:normal 24px Georgia,serif;margin:0}}.period{{font:11px monospace;color:var(--muted);margin:3px 0 0}}
-.status{{margin-left:auto;padding:5px 9px;border:1px solid var(--line);font:10px monospace;text-transform:uppercase}}
+.priority{{padding:5px 9px;background:#ece9df;color:#57594f;font:10px monospace}}.status{{margin-left:auto;padding:5px 9px;border:1px solid var(--line);font:10px monospace;text-transform:uppercase}}
 table{{width:100%;border-collapse:collapse;margin-top:18px;font-size:12px}}th{{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}}
 th,td{{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}}footer{{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}}
-@media(max-width:640px){{main{{padding:28px 16px}}h1{{font-size:34px}}.finding-head{{align-items:flex-start;flex-wrap:wrap}}.status{{margin-left:0}}table{{font-size:11px}}}}
+@media(max-width:640px){{main{{padding:28px 16px}}h1{{font-size:34px}}.finding-head{{align-items:flex-start;flex-wrap:wrap}}.status{{margin-left:0}}.priority{{margin-left:0}}table{{font-size:11px}}}}
 @media print{{body{{background:white}}main{{padding:0;max-width:none}}.finding{{break-inside:avoid}}}}
 </style></head><body><main>
 <header><div class="brand">DEALTIE / FINANCIAL EVIDENCE RECONCILIATION</div>
