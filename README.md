@@ -43,7 +43,7 @@ Extraction does not determine financial meaning. The analyst remains responsible
 - `DUPLICATE_SOURCE_ENTRY`: the same document/source reference appears more than once for a metric and period.
 - `INSUFFICIENT_COVERAGE`: fewer than two distinct source documents are represented.
 
-The engine does not infer scale, currency, period equivalence, source hierarchy or which figure is correct.
+The engine does not infer scale, currency, period equivalence, source hierarchy or which figure is correct. Findings are ordered by a transparent workflow triage priority: comparison conflicts first, evidence-quality issues next, incomplete coverage after that, and tied metrics last. This is not a financial materiality or risk score.
 
 ## CSV schema
 
