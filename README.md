@@ -83,4 +83,4 @@ See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commer
 
 ## Repository history
 
-The root-level `app.py`, `validator/` and older AI acceptance-assurance research files are retained as historical work. They are not the current DealTie product, are not part of the financial reconciliation workflow and must not be used in DealTie sales claims.
+The root-level `app.py`, `validator/` and `examples/acceptance_*` files are retained as historical work from an earlier product direction. They are not part of the current financial reconciliation workflow and must not be used in DealTie sales claims.
