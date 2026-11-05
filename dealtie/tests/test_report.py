@@ -19,6 +19,7 @@ class ReportTests(unittest.TestCase):
         }], tolerance="0.01", generated_at="2026-11-04T12:00:00Z")
         self.assertIn("Adjusted EBITDA", html)
         self.assertIn("Value mismatch", html)
+        self.assertIn("P1 · Resolve comparison", html)
         self.assertIn("QoE final", html)
         self.assertIn("PDF p.26", html)
         self.assertIn("0.01", html)
