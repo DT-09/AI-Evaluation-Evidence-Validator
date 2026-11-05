@@ -1,80 +1,39 @@
-# Product direction — DealTie Financial Evidence Reconciliation
+# DealTie — Transaction Consistency Control
 
-## Product definition
+## Product
 
-DealTie is a source-linked, analyst-confirmed pre-issue financial tie-out workbench for boutique M&A advisory and financial diligence teams.
+DealTie compares analyst-confirmed financial observations across M&A transaction documents and successive versions. It preserves source references and identifies downstream observations that may require human review after a source figure changes.
 
-It compares selected financial observations across a transaction document pack—initially a CIM, QoE report and valuation model—and produces an inspectable exception register. It is deliberately narrower than a data room, financial model, accounting platform or diligence engagement.
+Initial workflows: selected CIM, Quality of Earnings (QoE), valuation-model and management-presentation metrics. Initial buyer hypothesis: boutique M&A advisory, transaction advisory and financial diligence teams. Demand and willingness to pay remain unvalidated.
 
-## Buyer and job to be done
+## Implemented engine
 
-**Initial buyer hypothesis:** a partner, director or senior associate at a boutique M&A advisory or financial diligence firm.
+- Python deterministic reconciliation using explicit Decimal tolerance.
+- Value, unit, duplicate-source, missing-data and coverage exceptions.
+- Source-linked evidence ledger and JSON/CSV/HTML report outputs.
+- Version-change analysis in `dealtie.change_impact.analyze_version_impact`.
+- Streamlit multipage interface, including the Version Impact page.
 
-**Operational user:** analyst or associate preparing or reviewing transaction materials.
+The version-impact function accepts `document_family,version,document,metric,period,value,unit,source_ref`. It compares two selected versions of a source family and classifies exact downstream metric-period matches as `STALE_CANDIDATE`, `ALIGNED_TO_CURRENT`, `OTHER_VALUE` or `INSUFFICIENT_EVIDENCE`.
 
-**Job:** before a pack is circulated or relied upon, verify that agreed headline metrics are consistent across the relevant documents and make every unresolved difference easy to trace back to its source.
+It does not infer semantic equivalence, currency/scale/period conversion, source authority or correctness. A stale candidate is a review lead, not proof of an error.
 
-The buyer is not purchasing a generic dashboard. The useful output is a review-ready tie-out package that reduces manual cross-document checking and makes unresolved questions explicit.
+## Application and website
 
-This is a hypothesis, not validated demand. The repository contains no paying-customer evidence.
+- Core: Python and Decimal arithmetic.
+- Analyst application: Streamlit.
+- Public site and local CSV workbench: HTML, CSS and JavaScript.
+- Public site deployment target: Cloudflare Pages.
+- Analyst application deployment target: Streamlit Community Cloud.
 
-## Initial paid service
+## Limitations
 
-One scoped review:
-- One authorised, non-confidential or appropriately redacted document pack.
-- Up to 15 agreed headline metrics.
-- Up to three source documents: CIM, QoE and valuation model.
-- One agreed period map and stated unit convention.
-- Source references at PDF page or Excel sheet/cell level where extractable.
-- Confirmed observation ledger.
-- Exception register with reported values, sources, spread, unit/period issue and open question.
-- Tied / mismatch / insufficient-evidence status.
-- One reviewer walkthrough and one correction pass.
+Scanned-PDF OCR, semantic metric mapping, formula evaluation, secure deal-room hosting, authentication, tenant isolation, role permissions, encrypted client-file storage, immutable audit history, multi-user adjudication, production monitoring and disaster recovery are not implemented.
 
-Fee and delivery timing are agreed after non-confidential scoping. No public price, turnaround guarantee or savings claim is made.
-
-## Product workflow
-
-1. **Ingest:** read selectable PDF text, Excel cell values and structured CSV.
-2. **Confirm:** analyst maps extracted text to metric, period, value and unit. No extraction result becomes a financial observation without confirmation.
-3. **Reconcile:** deterministic rules compare same-named metrics and periods, applying an explicit tolerance and surfacing unit, missing-value, duplicate-source and coverage issues.
-4. **Investigate:** reviewer opens each finding and inspects the original source reference and recorded values.
-5. **Deliver:** export a machine-readable evidence register and a readable HTML review report.
-
-## Product boundaries
-
-DealTie does not:
-- decide which source is authoritative;
-- infer that two differently named metrics are equivalent;
-- convert currencies, scales or periods;
-- audit or evaluate workbook formulas;
-- interpret accounting adjustments or QoE classifications;
-- establish that a discrepancy is an error, misstatement, loss or recoverable amount;
-- provide an audit opinion, QoE conclusion, valuation opinion, legal opinion or transaction recommendation.
-
-Scanned-PDF OCR, semantic matching, secure deal-room hosting, authentication, role permissions, multi-user adjudication and audit-grade history are not implemented.
+Use synthetic or properly redacted and authorised data only. Do not upload confidential transaction material to the current prototype. Qualified finance professionals must supervise substantive interpretation.
 
 ## Commercial validation
 
-The immediate objective is not to build a broad SaaS platform. It is to validate whether a narrow, source-linked tie-out is painful enough that a boutique team will pay for a defined review.
+The target is a recurring cross-document tie-out and version-change workflow. A paid scoped review is an offer to validate demand, not proof of repeatable revenue. No customers, revenue, savings, accuracy rates or willingness-to-pay evidence are claimed.
 
-Evidence required:
-1. Five conversations with actual boutique advisory or diligence practitioners.
-2. At least three independently describe the same recurring cross-document tie-out problem.
-3. At least two share a non-confidential sample schema or synthetic example.
-4. At least one qualified buyer agrees to a paid, clearly scoped pilot through an authorised adult/business representative.
-5. A second paid engagement or explicit repeat-review trigger before describing revenue as repeatable.
-
-Stop or change direction if buyers already solve the workflow adequately, require full semantic extraction or secure hosted deal rooms from day one, or do not assign budget to the review.
-
-## Trust and data handling
-
-The current application is a prototype, not a secure transaction environment. Use synthetic or properly redacted, authorised data only. Do not accept confidential deal files until an appropriately authorised business representative has approved written terms and suitable security, access, retention and deletion controls. Qualified finance professionals must supervise substantive financial interpretation.
-
-## Claims policy
-
-Do not claim customers, revenue, savings, recovered value, accuracy rates, integrations, audit readiness or production security without evidence. Synthetic examples must remain labelled synthetic. Findings are exceptions for human investigation, not financial conclusions.
-
-## Historical repository material
-
-Earlier AI Acceptance Assurance work is retained in root-level legacy files. It is not the current DealTie product direction. See the repository README for the boundary.
+Do not describe DealTie as production-ready for confidential transaction packs until security, access control, storage, retention, auditability, operational monitoring, backup/recovery and independent review are implemented and verified.
