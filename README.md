@@ -79,7 +79,7 @@ A successful repository build is not proof of a successful live deployment. Veri
 
 The initial offer is a tightly scoped, paid, analyst-supervised tie-out review for a boutique advisory or diligence team. Scope and fee are agreed only after a non-confidential scoping discussion. No customer, revenue, savings or validated willingness to pay is claimed.
 
-See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commercial/dealtie-paid-pilot.md), [the deployment checklist](commercial/deployment-checklist.md), [the complete synthetic review](website/sample-review.html), [the private pilot inquiry page](website/pilot.html) and [the website](website/index.html).
+See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commercial/dealtie-paid-pilot.md), [the deployment checklist](commercial/deployment-checklist.md), [the M&A tie-out service page](website/cim-qoe-model-tie-out.html), [the printable tie-out checklist](website/resources/tie-out-checklist.html), [the complete synthetic review](website/sample-review.html), [the private pilot inquiry page](website/pilot.html) and [the website](website/index.html).
 
 ## Repository history
 
