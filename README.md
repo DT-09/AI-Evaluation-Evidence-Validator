@@ -61,7 +61,7 @@ python -m compileall -q dealtie
 ## Deployment
 
 - Workbench: deploy as a Streamlit Community Cloud app, selecting this repository, app path `dealtie/app.py`, and dependency file `dealtie/requirements.txt`.
-- Public site: deploy `website/` to Cloudflare Pages with no build command and `website` as the output directory.
+- Public site: deploy `website/` to Cloudflare Pages with no build command and `website` as the output directory. The private inquiry form requires the encrypted Cloudflare environment variables documented in [the deployment checklist](commercial/deployment-checklist.md).
 
 A successful repository build is not proof of a successful live deployment. Verify the public site and run a full synthetic case in the deployed workbench after publishing.
 
@@ -79,7 +79,7 @@ A successful repository build is not proof of a successful live deployment. Veri
 
 The initial offer is a tightly scoped, paid, analyst-supervised tie-out review for a boutique advisory or diligence team. Scope and fee are agreed only after a non-confidential scoping discussion. No customer, revenue, savings or validated willingness to pay is claimed.
 
-See [the product direction](PRODUCT_DIRECTION.md), [the pilot scope](commercial/dealtie-paid-pilot.md) and [the website](website/index.html).
+See [the product direction](PRODUCT_DIRECTION.md), [the paid pilot offer](commercial/dealtie-paid-pilot.md), [the deployment checklist](commercial/deployment-checklist.md), [the complete synthetic review](website/sample-review.html), [the private pilot inquiry page](website/pilot.html) and [the website](website/index.html).
 
 ## Repository history
 
