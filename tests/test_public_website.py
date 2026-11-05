@@ -55,6 +55,9 @@ class PublicWebsiteTests(unittest.TestCase):
     def test_synthetic_demo_is_clearly_labelled(self):
         self.assertRegex(self.html,re.compile(r"synthetic",re.IGNORECASE))
         self.assertIn("not client data",self.html.lower())
+        sample=(SITE.parent / "sample-review.html").read_text(encoding="utf-8").lower()
+        self.assertIn("p1 · resolve comparison",sample)
+        self.assertIn("workflow order, not a financial materiality",sample)
     def test_product_boundaries_are_disclosed(self):
         for phrase in ("no scanned-pdf ocr","semantic matching","not an audit opinion","not proof of an error"):
             self.assertIn(phrase,self.html.lower())
