@@ -49,8 +49,10 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(result[0]["status"], "TIED")
 
     def test_invalid_tolerance(self):
-        with self.assertRaises(ValueError):
-            reconcile([], tolerance="-1")
+        for invalid in ("-1", "NaN", "Infinity", "not-a-number"):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValueError):
+                    reconcile([], tolerance=invalid)
 
     def test_normalizes_group_keys(self):
         result = reconcile([
@@ -72,6 +74,18 @@ class ReconcileTests(unittest.TestCase):
             self.row("CIM", "4.2x", unit="x"),
             self.row("QoE", "4.20x", unit="x")
         ])[0]["status"], "TIED")
+
+    def test_valid_thousands_grouping(self):
+        result = reconcile([self.row("CIM", "1,200.5"), self.row("QoE", "1,200.50")])
+        self.assertEqual(result[0]["status"], "TIED")
+
+    def test_malformed_thousands_grouping_is_rejected(self):
+        result = reconcile([self.row("CIM", "1,2"), self.row("QoE", "12")])
+        self.assertEqual(result[0]["status"], "MISSING_OR_NON_NUMERIC")
+
+    def test_currency_symbol_in_value_is_not_silently_stripped(self):
+        result = reconcile([self.row("CIM", "$100"), self.row("QoE", "100")])
+        self.assertEqual(result[0]["status"], "MISSING_OR_NON_NUMERIC")
 
     def test_duplicate_source_reference_is_flagged(self):
         result = reconcile([
