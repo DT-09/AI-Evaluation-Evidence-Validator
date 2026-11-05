@@ -1,64 +1,50 @@
-# Paid pilot: AI support workflow acceptance evidence review
+# DealTie — paid pilot offer
 
-## Buyer decision
+## The buyer's decision
 
-Does a third-party AI support workflow meet the buyer's defined acceptance criteria, and what changed when the supplier released a new version?
+Can the team verify that selected headline financial metrics remain consistent across the CIM, Quality of Earnings report and valuation model—and trace every unresolved difference to its source—before the transaction pack is circulated?
 
-This is a scoped review of buyer-supplied test cases and structured run exports. It is not a general AI audit, safety certification, legal opinion, compliance attestation or independent live-agent testing service.
+## The engagement
 
-## Initial pilot boundary
+A paid, fixed-scope pre-issue financial evidence tie-out for one boutique M&A advisory or financial diligence team.
 
-- One customer-support workflow: ticket classification and routing.
-- One buyer-approved acceptance protocol.
-- Up to 50 buyer-provided test cases.
-- Up to two structured system runs (for example, two suppliers or an accepted baseline and candidate release).
-- Explicit deterministic checks for structured routing outcomes and required output fields.
-- Human-review decisions supplied or approved by the buyer for subjective criteria.
-- One case-level comparison and evidence report.
+### Included scope
 
-**Execution boundary:** the buyer or its authorised technical team runs the test cases in its own approved environment and exports the outputs. The current workbench imports and evaluates those structured outputs; it does not execute tests against live vendor systems, connect to production systems, verify backend state or measure integration latency.
+- One non-confidential or properly authorised and redacted document pack.
+- Up to 15 agreed headline metrics across up to three source documents.
+- One agreed period map and stated unit convention.
+- Source references at PDF page or Excel sheet/cell level where extractable.
+- Analyst-confirmed observation ledger.
+- Exception register with reported values, sources, spread, unit/period issues and open questions.
+- JSON, CSV and standalone HTML review outputs.
+- One reviewer walkthrough and one correction pass.
 
-Any change to the case count, number of systems, criteria, review effort, live execution or data handling changes the scope and must be agreed before work starts.
+## What the buyer receives
 
-## Buyer inputs
+1. A confirmed observation ledger.
+2. A source-linked exception register with deterministic statuses.
+3. A metric-by-metric explanation of comparisons and limitations.
+4. An unresolved-question and missing-evidence list.
+5. A structured handoff package that can be retained with the team's review materials.
 
-- Workflow description and decision context.
-- Acceptance criteria and severity definitions, or a working session to draft them.
-- Non-confidential or appropriately approved test cases.
-- Structured outputs from each system run.
-- Expected outcomes for deterministic checks.
-- Human-review rubric and reviewer decisions for subjective checks.
-- System/version metadata where available.
+The tool does not decide which source is authoritative or whether a difference is an error. A mismatch is an investigation lead—not proof of misstatement, loss or recoverable value.
 
-Do not transfer personal, confidential or customer data until a responsible adult/business representative has reviewed and approved the contract, permissions, access controls, retention, deletion and security arrangements. Initial scoping should use synthetic or non-confidential examples.
+## Why pay for this
 
-## Deliverables
-
-1. Versioned acceptance protocol.
-2. Case coverage and schema review.
-3. Case-level PASS / FAIL / INSUFFICIENT EVIDENCE results.
-4. Hard-gate and threshold summary.
-5. Baseline-versus-candidate regression register.
-6. Human-review record, where supplied by the buyer.
-7. JSON evidence package and readable HTML report.
-8. Limitations and unresolved evidence register.
-
-## Acceptance criteria for delivery
-
-The pilot is complete when the agreed inputs have been processed, every test case/criterion result is traceable, decision rules are disclosed, missing evidence is visible, and the buyer receives the agreed evidence package.
-
-The tool does not decide whether a system is safe or legally compliant. The buyer retains the final procurement and deployment decision.
+The buyer is paying for a bounded, review-ready output—not generic software access. The pilot is worth purchasing only if it improves the firm's current tie-out workflow. That must be established in a non-confidential scoping discussion, not asserted in advance.
 
 ## Commercial terms
 
-Paid, fixed-scope pilot. Fee and delivery timing are agreed privately after a non-confidential schema review and confirmation of scope. No free proof-of-concept and no public price claim.
+Paid fixed-scope engagement. Fee and delivery schedule are agreed privately after scope is confirmed. No public price, free proof-of-concept or guaranteed savings claim.
 
-Contracting, payment, tax and confidential-data arrangements must be handled by an appropriately authorised adult/business representative.
+An appropriately authorised adult/business representative must handle contracting, invoicing, payment, tax, confidentiality and client-data arrangements. A qualified finance professional must supervise substantive financial interpretation.
 
-## What must be validated before scaling
+## Data and product boundaries
 
-- Buyers have a recurring supplier acceptance/change-control problem.
-- They can obtain structured outputs from candidate systems.
-- Existing evaluation platforms and internal processes do not adequately solve the buyer-owned cross-supplier workflow.
-- A budget owner will pay for the pilot.
-- At least one buyer wants repeat acceptance reviews after supplier changes.
+The current workbench is a prototype, not a secure transaction environment. Do not upload confidential deal files to the public prototype. Initial scoping uses synthetic examples, a redacted schema or non-confidential material.
+
+No scanned-PDF OCR, semantic metric matching, currency/scale/period conversion, formula evaluation, accounting judgement, source hierarchy inference or audit/QoE/valuation opinion is provided.
+
+## Repeat-work path
+
+If the first review proves useful, the same team may commission a later tie-out for another mandate or materially revised pack. A retainer or subscription is not offered as validated demand until a buyer confirms a recurring trigger, owner and budget.
