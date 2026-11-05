@@ -58,7 +58,7 @@ The analyst must confirm financial meaning. Extracted text is not a confirmed ob
 - `DUPLICATE_SOURCE_ENTRY`: a document/source reference pair is repeated within a metric/period group.
 - `INSUFFICIENT_COVERAGE`: fewer than two distinct documents are represented.
 
-Priority order is explicit in the implementation; a finding receives one status and a reviewer must inspect all observations before drawing a conclusion.
+Priority order is explicit in the implementation: value and unit conflicts first; duplicate-source and missing/non-numeric evidence next; insufficient source coverage after that; tied metrics last. This is workflow triage only, not a financial materiality or risk score. A finding receives one status and a reviewer must inspect all observations before drawing a conclusion.
 
 ## Out of scope
 
