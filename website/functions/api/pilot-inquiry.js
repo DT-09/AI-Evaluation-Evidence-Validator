@@ -39,13 +39,12 @@ export async function onRequestPost({ request, env }) {
   const company = clean(body.company, 120);
   const name = clean(body.name, 100);
   const email = clean(body.email, 254);
-  const role = clean(body.role, 100);
   const workflow = clean(body.workflow, 120);
-  const context = clean(body.context, 1800);
+  const context = clean(body.context, 600);
   const acknowledged = body.acknowledged === true;
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if (!company || !name || !emailOk || !role || !workflow || !acknowledged) {
+  if (!company || !name || !emailOk || !workflow || !acknowledged) {
     return json({ error: "Complete the required fields and confirm that no confidential information is included." }, 400);
   }
 
@@ -60,7 +59,6 @@ export async function onRequestPost({ request, env }) {
     "Firm: " + company,
     "Name: " + name,
     "Business email: " + email,
-    "Role: " + role,
     "Workflow: " + workflow,
     "",
     "High-level process description:",
