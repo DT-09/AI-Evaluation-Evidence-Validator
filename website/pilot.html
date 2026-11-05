@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171714">
+<meta name="description" content="Request a private, non-confidential discussion about a scoped DealTie financial evidence tie-out pilot.">
+<title>Request a DealTie pilot</title>
+<style>
+:root{--ebony:#171714;--ink:#24251f;--paper:#f2efe7;--white:#fbfaf6;--green:#46695d;--gold:#c6ad7e;--muted:#77786f;--line:#d9d5c9;--serif:Georgia,'Times New Roman',serif;--sans:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}a{color:inherit;text-decoration:none}
+.wrap{width:min(900px,calc(100% - 42px));margin:auto}.top{background:rgba(23,23,20,.96);color:var(--paper);border-bottom:1px solid #c6ad7e55}
+nav{height:70px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:11px;font-weight:700;letter-spacing:.22em}.back{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#d1cabb}
+main{padding:64px 0 84px}.eyebrow{font:10px monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--green)}
+h1,h2{font-family:var(--serif);font-weight:400}h1{font-size:clamp(42px,6vw,64px);line-height:1.02;letter-spacing:-.04em;margin:18px 0}
+.lead{font-size:14px;line-height:1.85;color:#62645d;max-width:680px}.notice{margin:28px 0;padding:16px 18px;background:#e7e2d7;border-left:3px solid var(--green);font-size:11px;line-height:1.8;color:#50534c}
+.layout{display:grid;grid-template-columns:1fr 1.1fr;gap:30px;align-items:start;margin-top:36px}.scope{padding:25px;background:var(--ebony);color:var(--paper)}.scope h2{font-size:27px;margin:0 0 14px}.scope p,.scope li{font-size:11px;line-height:1.8;color:#c9c6bb}.scope ul{padding-left:18px}.formpanel{background:var(--white);border:1px solid var(--line);padding:26px}
+label{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin:15px 0 7px;color:#55584f}
+input,select,textarea{width:100%;border:1px solid #cfcabd;background:#fffefa;padding:12px 13px;font:13px var(--sans);color:var(--ink);border-radius:0}
+textarea{min-height:110px;resize:vertical}.check{display:flex;gap:10px;align-items:flex-start;margin:17px 0;font-size:10px;line-height:1.6;color:var(--muted)}.check input{width:auto;margin-top:2px}
+button{width:100%;border:0;background:var(--gold);color:var(--ebony);padding:15px 18px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.status{min-height:25px;margin-top:13px;font-size:11px;line-height:1.6;color:var(--green)}.small{font-size:10px;color:var(--muted);line-height:1.7;margin-top:14px}
+.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+footer{background:#100f0d;color:#a9a69b;padding:25px 0;font-size:10px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+@media(max-width:720px){.layout{grid-template-columns:1fr}main{padding:45px 0 60px}.formpanel{padding:20px}}
+</style>
+</head>
+<body>
+<header class="top"><nav class="wrap"><a class="brand" href="index.html">DEALTIE</a><a class="back" href="index.html">← Back to overview</a></nav></header>
+<main class="wrap">
+<div class="eyebrow">Private pilot discussion / non-confidential only</div>
+<h1>Start with the review.<br>Not a sales pitch.</h1>
+<p class="lead">Tell us how your team checks selected financial metrics across a CIM, QoE report and valuation model. We will use the information to assess whether the bounded DealTie pilot fits your workflow. This is an inquiry, not an engagement or purchase commitment.</p>
+<div class="notice"><strong>Please do not submit confidential information.</strong> No deal names, client identities, financial figures, transaction identifiers, documents, attachments or personal data beyond the business contact fields requested below. Begin with a high-level description only.</div>
+<div class="layout">
+<aside class="scope">
+<h2>What the pilot covers</h2>
+<ul>
+<li>One authorised, non-confidential or properly redacted document pack.</li>
+<li>Up to 15 agreed headline metrics across up to 3 source documents.</li>
+<li>Confirmed observation ledger and source-linked exception register.</li>
+<li>Tied, mismatch and insufficient-evidence classifications.</li>
+<li>CSV/JSON evidence exports and a readable HTML report.</li>
+<li>One reviewer walkthrough and one correction pass.</li>
+</ul>
+<p>Fee and delivery schedule are discussed privately after scope is understood. No public price or savings guarantee.</p>
+<p>DealTie is a prototype review aid, not an audit, QoE conclusion, valuation opinion or secure deal room.</p>
+</aside>
+<section class="formpanel">
+<form id="pilotForm">
+<div class="hp" aria-hidden="true"><label>Leave this field empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label for="company">Firm / organisation *</label><input id="company" name="company" maxlength="120" required autocomplete="organization" placeholder="Your firm">
+<label for="name">Your name *</label><input id="name" name="name" maxlength="100" required autocomplete="name" placeholder="Name">
+<label for="email">Business email *</label><input id="email" name="email" type="email" maxlength="254" required autocomplete="email" placeholder="name@firm.com">
+<label for="role">Your role *</label><select id="role" name="role" required><option value="">Select role</option><option>M&A partner / managing partner</option><option>Director / VP</option><option>Senior associate / analyst</option><option>Financial diligence lead</option><option>Other</option></select>
+<label for="workflow">What workflow is relevant? *</label><select id="workflow" name="workflow" required><option value="">Select workflow</option><option>Pre-issue CIM / QoE / model tie-out</option><option>Buy-side financial document review</option><option>Other cross-document financial review</option><option>Not sure yet</option></select>
+<label for="context">Current process (high-level, no deal details)</label><textarea id="context" name="context" maxlength="1800" placeholder="How does your team currently check selected figures across documents? Where does manual review remain?"></textarea>
+<label class="check"><input type="checkbox" name="acknowledged" required><span>I confirm that this inquiry contains no confidential transaction information and understand that this is a non-binding request for discussion.</span></label>
+<button id="submit" type="submit">Send private inquiry</button>
+<div class="status" id="status" role="status" aria-live="polite"></div>
+<p class="small">The form sends this limited inquiry to the DealTie contact configured by the site operator. It does not upload files or store a deal-room record. Do not use it for confidential material.</p>
+</form>
+</section>
+</div>
+</main>
+<footer><div class="wrap foot"><span>DEALTIE / FINANCIAL EVIDENCE RECONCILIATION</span><span>Prototype · Synthetic examples only · Human review required</span></div></footer>
+<script>
+const form=document.getElementById('pilotForm'),status=document.getElementById('status'),submit=document.getElementById('submit');
+form.addEventListener('submit',async event=>{
+ event.preventDefault();status.textContent='Sending…';submit.disabled=true;
+ const data=Object.fromEntries(new FormData(form).entries());
+ data.acknowledged=form.elements.acknowledged.checked;
+ try{
+  const response=await fetch('/api/pilot-inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.error||'The inquiry could not be sent. Please try again later.');
+  form.reset();status.textContent='Inquiry sent. The configured DealTie contact can follow up using your business email.';
+ }catch(error){status.textContent=error.message||'Unable to send the inquiry. Please try again later.';}
+ finally{submit.disabled=false;}
+});
+</script>
+</body></html>
