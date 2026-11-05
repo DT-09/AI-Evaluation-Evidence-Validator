@@ -1,0 +1,29 @@
+name: DealTie checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: dealtie/requirements.txt
+      - name: Install workbench dependencies
+        run: python -m pip install -r dealtie/requirements.txt
+      - name: Run unit tests
+        run: PYTHONPATH=. python -m unittest discover -s dealtie/tests -v
+      - name: Compile Python modules
+        run: python -m compileall -q dealtie
