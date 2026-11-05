@@ -90,7 +90,7 @@ th,td{{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}}
 <header><div class="brand">DEALTIE / FINANCIAL EVIDENCE RECONCILIATION</div>
 <h1>Financial evidence review</h1>
 <div class="meta">Generated {safe_time} · Comparison tolerance: {safe_tolerance}</div></header>
-<div class="notice"><strong>Review boundary.</strong> A mismatch is an investigation lead, not proof of an error, misstatement, financial loss or recoverable amount. This report is not an audit opinion, QoE conclusion, valuation opinion, legal opinion or transaction recommendation.</div>
+<div class="notice"><strong>Review boundary.</strong> A mismatch is an investigation lead, not proof of an error, misstatement, financial loss or recoverable amount. Review priority is a workflow order, not a financial materiality or risk score. This report is not an audit opinion, QoE conclusion, valuation opinion, legal opinion or transaction recommendation.</div>
 <section class="summary">{summary}</section>
 {body}
 <footer>DealTie records analyst-confirmed observations and applies explicit comparison rules. It does not determine which source is authoritative, convert currencies or periods, evaluate workbook formulas, or provide accounting judgement. A qualified finance professional must review substantive conclusions. Prototype output: use synthetic or properly authorised and redacted data only.</footer>
