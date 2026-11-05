@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://dealtie.pages.dev/sitemap.xml
