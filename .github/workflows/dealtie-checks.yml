@@ -1,9 +1,8 @@
 name: DealTie checks
 on:
   push:
-    branches: [main, production-readiness, rebuild-transaction-control]
+    branches: [main, production-readiness, rebuild-transaction-control, rebuild-release-candidate]
   pull_request:
-    branches: [main]
 jobs:
   python-tests:
     runs-on: ubuntu-latest
@@ -20,3 +19,29 @@ jobs:
         run: python -m unittest discover -s dealtie/tests -v
       - name: Compile Python modules
         run: python -m compileall -q dealtie
+
+      - name: Validate public website and enquiry wiring
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path("website")
+          home = (root / "index.html").read_text(encoding="utf-8")
+          pilot = (root / "pilot.html").read_text(encoding="utf-8")
+          endpoint = root / "functions" / "api" / "pilot-inquiry.js"
+
+          required_ids = {"top", "problem", "workflow", "demo", "audience", "scope", "deliverables"}
+          ids = re.findall(r'\\bid=["\\']([^"\\']+)["\\']', home)
+          duplicates = sorted({item for item in ids if ids.count(item) > 1})
+          missing = sorted(required_ids - set(ids))
+          assert not duplicates, f"Duplicate homepage IDs: {duplicates}"
+          assert not missing, f"Missing homepage sections: {missing}"
+          assert '<footer class="footer"' in home, "Homepage footer missing"
+          assert '<footer class="footer"' in pilot, "Pilot footer missing"
+          assert 'fetch(\'/api/pilot-inquiry\'' in pilot or 'fetch("/api/pilot-inquiry"' in pilot, "Pilot form is not wired to the enquiry endpoint"
+          assert endpoint.exists(), "Cloudflare Pages enquiry function is missing"
+          assert 'export async function onRequestPost' in endpoint.read_text(encoding="utf-8"), "Enquiry function POST handler missing"
+          assert (root / "workbench.html").exists(), "Browser workbench missing"
+          print("Website structure, demo sections, footer and pilot endpoint wiring validated.")
+          PY
